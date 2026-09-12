@@ -18,20 +18,38 @@
   body{font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
     background:#f8fafc; color:var(--ink); line-height:1.5;}
   button{font:inherit; cursor:pointer; border:none; background:none; color:inherit;}
-  .wrap{max-width:760px; margin:0 auto; padding:14px 16px 40px;}
+  .wrap{max-width:1080px; margin:0 auto; padding:16px 20px 48px;}
 
   /* Header */
-  header{background:var(--slate); color:#fff; border-radius:var(--radius);
-    padding:16px 18px; margin-bottom:16px;}
-  header h1{font-size:22px; letter-spacing:.3px;}
-  header .sub{color:#cbd5e1; font-size:14px; margin-top:2px;}
-  header .count{display:inline-block; margin-top:8px; font-size:13px;
-    background:#1e293b; padding:4px 10px; border-radius:999px; color:#fbbf24;}
+  header{background:linear-gradient(135deg,#1e293b,#0f172a); color:#fff;
+    border-radius:var(--radius); padding:18px 22px; margin-bottom:16px;
+    display:flex; flex-direction:column; gap:12px;
+    box-shadow:0 4px 14px rgba(15,23,42,.18);}
+  header .htop{display:flex; align-items:center; justify-content:space-between; gap:14px; flex-wrap:wrap;}
+  header h1{font-size:24px; letter-spacing:.3px;}
+  header .sub{color:#cbd5e1; font-size:14px; margin-top:3px;}
+  header .count{display:inline-block; font-size:13px;
+    background:#1e293b; border:1px solid #334155; padding:5px 12px; border-radius:999px; color:#fbbf24; align-self:flex-start;}
+  .qsBtn{background:#fbbf24; color:#1f2937; border-radius:12px; padding:12px 18px;
+    font-size:15px; font-weight:800; white-space:nowrap; box-shadow:0 2px 8px rgba(251,191,36,.35);}
+  .qsBtn:active{transform:translateY(1px);}
+  .qsBtn small{display:block; font-weight:600; font-size:11px; opacity:.75;}
 
   .card{background:#fff; border:1px solid var(--line); border-radius:var(--radius);
-    padding:16px; margin-bottom:16px;}
+    padding:16px; margin-bottom:16px; box-shadow:0 1px 3px rgba(0,0,0,.04);}
   .card h2{font-size:16px; margin-bottom:10px;}
   .card h2 small{color:var(--muted); font-weight:400;}
+
+  /* Collapsible (details) card */
+  details.card{padding:0; overflow:hidden;}
+  details.card > summary{padding:14px 16px; cursor:pointer; font-size:16px; font-weight:600;
+    display:flex; justify-content:space-between; align-items:center; gap:10px; user-select:none;}
+  details.card > summary::-webkit-details-marker{display:none;}
+  details.card > summary::after{content:"\25BE"; color:var(--muted); font-weight:400; transition:.2s;}
+  details.card[open] > summary{border-bottom:1px solid var(--line);}
+  details.card[open] > summary::after{content:"\25B4";}
+  details.card > summary small{color:var(--muted); font-weight:400; font-size:12px;}
+  details.card .setBody{padding:16px;}
 
   /* Settings form */
   .grid2{display:grid; grid-template-columns:repeat(auto-fit,minmax(140px,1fr)); gap:10px;}
@@ -49,14 +67,19 @@
     font-size:16px; font-weight:600; white-space:nowrap;}
   .bBtn:active{transform:translateY(1px);}
 
-  /* Paper rows */
-  .paper{display:flex; align-items:center; justify-content:space-between;
-    gap:10px; border:1px solid var(--line); border-radius:12px; padding:12px 14px; margin-bottom:10px;}
-  .paper .t{font-weight:600;}
-  .paper .m{font-size:12px; color:var(--muted);}
-  .paper .best{font-size:12px; color:var(--green); font-weight:600;}
-  .paper .btns{display:flex; gap:8px; flex-wrap:wrap;}
-  .mini{background:#eef2f7; border-radius:10px; padding:8px 12px; font-size:14px; font-weight:600;}
+  /* Paper cards */
+  .papers{display:grid; grid-template-columns:repeat(auto-fit,minmax(250px,1fr)); gap:12px;}
+  .paper{display:flex; flex-direction:column; gap:10px;
+    border:1px solid var(--line); border-radius:14px; padding:16px; background:#fff;
+    box-shadow:0 1px 3px rgba(0,0,0,.05);}
+  .paper .t{font-weight:700; font-size:16px;}
+  .paper .m{font-size:13px; color:var(--muted);}
+  .paper .m b{color:var(--ink);}
+  .paper .best{display:inline-block; font-size:12px; color:var(--green); font-weight:700;
+    background:var(--green-soft); border:1px solid #bbf7d0; border-radius:999px; padding:3px 10px; align-self:flex-start;}
+  .paper .btns{display:flex; gap:8px; margin-top:auto;}
+  .paper .btns .mini{flex:1;}
+  .mini{background:#eef2f7; border-radius:10px; padding:10px 12px; font-size:14px; font-weight:600; text-align:center;}
   .mini.alt{background:var(--blue); color:#fff;}
   .mini.danger{background:var(--red-soft); color:var(--red);}
 
@@ -80,11 +103,15 @@
   .ai-btn{background:#7c3aed; color:#fff; border-radius:999px; padding:6px 12px; font-size:13px;}
   .ai-btn:disabled{background:#c4b5fd; cursor:not-allowed;}
 
-  .qcard{background:#fff; border:1px solid var(--line); border-radius:var(--radius); padding:18px;}
-  .qno{font-size:13px; color:var(--muted); font-weight:700; letter-spacing:.4px; margin-bottom:6px;}
-  .qtext{font-size:21px; font-weight:600; margin-bottom:6px;}
-  .qwords{font-size:13px; color:var(--amber); background:var(--amber-soft);
-    display:inline-block; padding:4px 10px; border-radius:8px; margin-bottom:10px;}
+  .qcard{background:#fff; border:1px solid var(--line); border-radius:var(--radius); padding:20px;}
+  .qno{font-size:13px; color:var(--muted); font-weight:700; letter-spacing:.4px; margin-bottom:6px;
+    display:flex; justify-content:space-between; align-items:center; gap:8px; flex-wrap:wrap;}
+  .qtext{font-size:21px; font-weight:600; margin:12px 0 10px; line-height:1.7; word-break:break-word;}
+  .qexpl{background:var(--blue-soft); color:var(--blue); border:1px solid #bfdbfe; border-radius:999px;
+    padding:6px 12px; font-size:12px; font-weight:700; letter-spacing:0; white-space:nowrap;}
+  .qexpl:disabled{opacity:.4; cursor:not-allowed;}
+  .qwords{font-size:13px; color:#0369a1; background:#e0f2fe; border:1px solid #bae6fd;
+    display:inline-block; padding:4px 10px; border-radius:8px; margin:4px 0 8px; font-weight:600;}
   .fig{margin:8px 0 6px; text-align:center;}
 
   .opts{margin-top:8px;}
@@ -179,6 +206,19 @@
     font-size:15px; opacity:0; pointer-events:none; transition:.25s; z-index:60;}
   .toast.show{opacity:1;}
   .fee{text-align:center; color:var(--muted); font-size:12px; margin-top:14px;}
+
+  /* Mobile */
+  @media (max-width:560px){
+    .wrap{padding:10px 12px 40px;}
+    header{padding:16px;}
+    header h1{font-size:20px;}
+    .qsBtn{width:100%; font-size:15px;}
+    .qcard{padding:14px;}
+    .qtext{font-size:19px;}
+    .ctr{min-width:58px; padding:10px 6px; font-size:14px;}
+    .ai-btn{font-size:12px;}
+    .opt{font-size:16px; padding:12px;}
+  }
 </style>
 </head>
 <body>
@@ -205,6 +245,12 @@ var DEF = {
   pc: 5, pw: -1, ps: 0, mins: 75, noLimit: false,
   explAfter: true, aiOn: true, key: "", model: "gemini-3-flash-preview"
 };
+var MODELS = [
+  {id:"gemini-3-flash-preview", label:"Gemini 3 Flash (naya, tez)"},
+  {id:"gemini-2.5-flash",       label:"Gemini 2.5 Flash (tez)"},
+  {id:"gemini-2.5-pro",         label:"Gemini 2.5 Pro (sab se smart)"},
+  {id:"gemini-2.0-flash",       label:"Gemini 2.0 Flash (purana)"}
+];
 function setS(){ store.settings = Object.assign({}, DEF, store.settings); return store.settings; }
 function bank(){ // merged: shipped + locally added
   var ids={}; var out=window.QUESTIONS.slice();
@@ -508,12 +554,19 @@ function renderHome(){
   var s = setS();
   var dists = Object.keys(DISTS).map(function(k){
     return '<option value="'+k+'">'+esc(DISTS[k].label)+'</option>'; }).join("");
-  var html = '<header><h1>Aaira\'s ICATS Prep</h1>'
-    + '<div class="sub">Maths Contest · Grade 3-4 · Student: Aaira Ashif</div>'
+  var mOpts = MODELS.map(function(m){
+    return '<option value="'+m.id+'"'+(s.model===m.id?' selected':'')+'>'+esc(m.label)+'</option>'; }).join("");
+  if(MODELS.every(function(m){ return m.id!==s.model; }))
+    mOpts = '<option value="'+esc(s.model)+'" selected>'+(s.model?'Custom: '+esc(s.model):'')+'</option>'+mOpts;
+  var html = '<header><div class="htop"><div><h1>Aaira\'s ICATS Prep</h1>'
+    + '<div class="sub">Maths Contest · Grade 3-4 · Student: Aaira Ashif</div></div>'
+    + '<button class="qsBtn" onclick="quickStart()">&#9654; Quick Start'
+    + '<small>25 sawal · 90 min · exam-style</small></button></div>'
     + '<span class="count">'+esc(daysLeft())+'</span></header>';
 
-  /* Settings */
-  html += '<div class="card"><h2>Settings <small>(quiz rules — sab papers par lagte hain)</small></h2>'
+  /* Settings (collapsed by default) */
+  html += '<details class="card"><summary>Settings <small>(quiz rules — sab papers par lagte hain)</small></summary>'
+    + '<div class="setBody">'
     + '<div class="grid2">'
     + '<div><label>Correct (+)</label><input type="number" id="set_pc" value="'+s.pc+'"></div>'
     + '<div><label>Wrong (−)</label><input type="number" id="set_pw" value="'+s.pw+'"></div>'
@@ -531,11 +584,12 @@ function renderHome(){
     + '<div class="grid2" style="margin-top:10px">'
     + '<div class="full"><label>Gemini API key <span style="font-weight:400">(optional — AI help)</span></label>'
     + '<input type="text" id="set_key" value="'+esc(s.key)+'" placeholder="paste key from aistudio.google.com"></div>'
-    + '<div><label>AI model</label><input type="text" id="set_model" value="'+esc(s.model)+'"></div>'
+    + '<div><label>AI model</label><select id="set_model">'+mOpts+'</select></div>'
     + '<div style="display:flex; align-items:flex-end; padding-bottom:6px;">'
     + '<label class="switch"><input type="checkbox" id="set_aion"'+(s.aiOn?" checked":"")+'>'
     + '<span class="sw-track"></span><span>AI Help On</span></label></div>'
-    + '</div></div>';
+    + '</div>'
+    + '</div></details>';
 
   /* Custom paper builder */
   var nMax = Math.max(5, bank().length);
@@ -549,7 +603,7 @@ function renderHome(){
     + '<div class="hint">Easy questions pehle, hard aakhir mein — jaise asli exam (analysis 2021–2025).</div></div>';
 
   /* Fixed papers */
-  html += '<div class="card"><h2>Fixed Papers <small>(exam-style sets)</small></h2>';
+  html += '<div class="card"><h2>Fixed Papers <small>(exam-style sets)</small></h2><div class="papers">';
   var any = false;
   window.PAPERS.forEach(function(p){
     var qs = buildFixed(p);
@@ -558,17 +612,17 @@ function renderHome(){
     var best = store.bests && store.bests[p.id];
     var trying = store.fixed && store.fixed[p.id];
     var btn = trying
-      ? '<button class="mini alt" onclick="startFixed(\''+p.id+'\')">Continue</button>'
-      : '<button class="mini alt" onclick="startFixed(\''+p.id+'\')">Start</button>';
-    html += '<div class="paper"><div><div class="t">'+esc(p.title)+'</div>'
-      + '<div class="m">'+qs.length+' questions'+(p.note?' · '+esc(p.note):'')+'</div>'
+      ? '<button class="mini alt" onclick="startFixed(\''+p.id+'\')">Continue &#9654;</button>'
+      : '<button class="mini alt" onclick="startFixed(\''+p.id+'\')">Start &#9654;</button>';
+    html += '<div class="paper"><div class="t">'+esc(p.title)+'</div>'
+      + '<div class="m"><b>'+qs.length+' questions</b> · '+(p.time?p.time+' min':'')+(p.note?' · '+esc(p.note):'')+'</div>'
       + (best!=null?'<div class="best">Best score: '+best+'</div>':"")
-      + '</div><div class="btns">'+btn
+      + '<div class="btns">'+btn
       + (trying?'<button class="mini danger" onclick="resetFixed(\''+p.id+'\')">Restart</button>':"")
       + '</div></div>';
   });
   if(!any) html += '<div class="hint">Koi fixed paper save nahi hai — custom builder use karein.</div>';
-  html += '</div>';
+  html += '</div></div>';
 
   html += '<div class="fee">Offline practice sab kaam karta hai. AI help ke liye internet + API key chahiye. Key sirf aap ke browser mein rehti hai.</div>';
   app.innerHTML = html;
@@ -576,15 +630,19 @@ function renderHome(){
 
 function collectSettings(){
   var s = setS();
-  s.pc = num("set_pc", 5); s.pw = num("set_pw", -1); s.ps = num("set_ps", 0);
-  s.mins = num("set_mins", 75); s.noLimit = !!$("set_nolimit").checked;
-  s.explAfter = !!$("set_explafter").checked;
-  s.key = ($("set_key").value||"").trim(); s.model = ($("set_model").value||"").trim() || DEF.model;
-  s.aiOn = !!$("set_aion").checked;
+  if($("set_pc")) s.pc = num("set_pc", 5);
+  if($("set_pw")) s.pw = num("set_pw", -1);
+  if($("set_ps")) s.ps = num("set_ps", 0);
+  if($("set_mins")) s.mins = num("set_mins", 75);
+  if($("set_nolimit")) s.noLimit = !!$("set_nolimit").checked;
+  if($("set_explafter")) s.explAfter = !!$("set_explafter").checked;
+  if($("set_key")) s.key = ($("set_key").value||"").trim();
+  if($("set_model")){ var mv=($("set_model").value||"").trim(); if(mv) s.model=mv; }
+  if($("set_aion")) s.aiOn = !!$("set_aion").checked;
   persist();
   return s;
 }
-function num(id, d){ var v = parseInt($(id).value,10); return isNaN(v)?d:v; }
+function num(id, d){ var el=$(id); if(!el) return d; var v=parseInt(el.value,10); return isNaN(v)?d:v; }
 function $(id){ return document.getElementById(id); }
 
 function pluginNames(q){ return "question:\n"+q.q
@@ -616,6 +674,13 @@ function startGenerated(){
   var qs = buildGenerated(n, dist);
   if(!qs.length){ toast("Bank mein abhi questions nahi hain."); return; }
   newAttempt("Custom Paper ("+qs.length+" Q)", "generated", qs, setS().noLimit ? 0 : setS().mins);
+  renderQuiz();
+}
+function quickStart(){
+  collectSettings();
+  var qs = buildGenerated(25, "exam");
+  if(!qs.length){ toast("Bank mein abhi questions nahi hain."); return; }
+  newAttempt("Quick Start (25 Q)", "generated", qs, 90);
   renderQuiz();
 }
 
@@ -672,14 +737,14 @@ function renderQuiz(){
     + '<button class="ai-btn" id="aiB" onclick="openAI()"'+(aiOk?"":" disabled")+'>AI Help</button>'
     + '</div>'
     + '<div class="qcard">'
-    + '<div class="qno">QUESTION '+(attempt.idx+1)+' — '+A.q.difficulty.toUpperCase()+' · '+esc(A.q.category)+'</div>'
+    + '<div class="qno">QUESTION '+(attempt.idx+1)+' — '+A.q.difficulty.toUpperCase()+' · '+esc(A.q.category)
+    + '<button class="qexpl" onclick="showExplain(\'q\')"'+(explDisabled?" disabled":"")+'>(?) Sawal samjhao</button></div>'
     + '<div class="qtext">'+esc(A.q.q)+'</div>'
     + figureHtml(A.q)
-    + (A.q.words?'<span class="qwords">Danger word: '+esc(A.q.words)+'</span>':"")
+    + (A.q.words?'<span class="qwords">Hint: '+esc(A.q.words)+'</span>':"")
     + '<div class="opts">'+opts+'</div>'
     + fb
     + '<div class="expl">'
-    + '<button class="expl-btn" id="eqB" onclick="showExplain(\'q\')"'+(explDisabled?" disabled":"")+'>(?) Sawal samjhao</button>'
     + '<button class="expl-btn" id="eaB" onclick="showExplain(\'a\')"'+(explDisabled?" disabled":"")+'>(?) Jawab samjhao — steps</button>'
     + '</div>'
     + '</div>'
@@ -703,6 +768,8 @@ function choose(i){
   A.choice = i;
   renderQuiz();
 }
+var NEXT_DELAY = 1800;
+function flashFb(){ var el=document.querySelector(".fb"); if(el) el.scrollIntoView({behavior:"smooth", block:"nearest"}); }
 function doNext(){
   var A = attempt.qs[attempt.idx];
   if(A.status==="answered" || A.status==="skipped"){ goTo(attempt.idx+1); return; }
@@ -715,17 +782,20 @@ function doNext(){
     A.status = "skipped"; A.gained = s.ps;
   }
   saveAttempt();
-  if(attempt.idx === attempt.qs.length-1){ renderQuiz(); setTimeout(renderResults, 600); return; }
-  renderQuiz();
-  setTimeout(function(){ goTo(attempt.idx+1); }, 650);
+  var last = attempt.idx === attempt.qs.length-1;
+  renderQuiz(); flashFb();
+  if(last){ setTimeout(renderResults, NEXT_DELAY); return; }
+  setTimeout(function(){ goTo(attempt.idx+1); }, NEXT_DELAY);
 }
 function doSkip(){
   var A = attempt.qs[attempt.idx];
   if(A.status!=="unanswered") return;
   A.status="skipped"; A.choice=null; A.gained=setS().ps;
   saveAttempt();
-  if(attempt.idx===attempt.qs.length-1){ renderResults(); return; }
-  goTo(attempt.idx+1);
+  var last = attempt.idx===attempt.qs.length-1;
+  renderQuiz(); flashFb();
+  if(last){ setTimeout(renderResults, NEXT_DELAY); return; }
+  setTimeout(function(){ goTo(attempt.idx+1); }, NEXT_DELAY);
 }
 function goTo(i){
   if(i<0||i>=attempt.qs.length) return;
@@ -788,7 +858,7 @@ function showExplain(which){
   if(which==="q"){
     openModal('<h3>Sawal samjhao — Simple wording</h3>'
       +'<p style="font-size:17px">'+esc(q.explainQ)+'</p>'
-      +(q.words?'<p style="margin-top:10px" class="qwords">Danger word: '+esc(q.words)+'</p>':""));
+      +(q.words?'<p style="margin-top:10px" class="qwords">Hint: '+esc(q.words)+'</p>':""));
   } else {
     var steps=q.explainA.map(function(st){ return '<div class="lstep">'+esc(st)+'</div>'; }).join("");
     openModal('<h3>Jawab samjhao — Steps</h3>'
@@ -906,7 +976,7 @@ function renderResults(){
     var stlab = st==="c"?"Correct":"Wrong";
     if(st==="s") stlab="Skip";
     var det = '<div class="row"><b>Q'+(i+1)+':</b> '+esc(a.q.q)+'</div>'
-      + (a.q.words?'<div class="qwords">Danger word: '+esc(a.q.words)+'</div>':"")
+      + (a.q.words?'<div class="qwords">Hint: '+esc(a.q.words)+'</div>':"")
       + '<div class="row" style="margin-top:6px">Aap ka jawab: '
         + (a.choice!=null?esc(a.q.options[a.choice]):"— (skipped)")+'</div>'
       + '<div class="row">Sahi jawab: <b>'+esc(a.q.options[a.q.answer])+'</b> ('+'ABCD'[a.q.answer]+')</div>'

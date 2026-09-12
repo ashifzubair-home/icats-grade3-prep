@@ -1,0 +1,765 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Aaira's ICATS Prep</title>
+<style>
+  :root{
+    --ink:#1f2937; --muted:#6b7280; --line:#e5e7eb;
+    --blue:#2563eb; --blue-soft:#eff6ff;
+    --green:#16a34a; --green-soft:#f0fdf4;
+    --red:#dc2626;   --red-soft:#fef2f2;
+    --amber:#d97706; --amber-soft:#fffbeb;
+    --slate:#0f172a; --radius:14px;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;
+    -webkit-tap-highlight-color:transparent;}
+  body{font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+    background:#f8fafc; color:var(--ink); line-height:1.5;}
+  button{font:inherit; cursor:pointer; border:none; background:none; color:inherit;}
+  .wrap{max-width:760px; margin:0 auto; padding:14px 16px 40px;}
+
+  /* Header */
+  header{background:var(--slate); color:#fff; border-radius:var(--radius);
+    padding:16px 18px; margin-bottom:16px;}
+  header h1{font-size:22px; letter-spacing:.3px;}
+  header .sub{color:#cbd5e1; font-size:14px; margin-top:2px;}
+  header .count{display:inline-block; margin-top:8px; font-size:13px;
+    background:#1e293b; padding:4px 10px; border-radius:999px; color:#fbbf24;}
+
+  .card{background:#fff; border:1px solid var(--line); border-radius:var(--radius);
+    padding:16px; margin-bottom:16px;}
+  .card h2{font-size:16px; margin-bottom:10px;}
+  .card h2 small{color:var(--muted); font-weight:400;}
+
+  /* Settings form */
+  .grid2{display:grid; grid-template-columns:repeat(auto-fit,minmax(140px,1fr)); gap:10px;}
+  label{display:block; font-size:12px; color:var(--muted); margin-bottom:4px;}
+  input[type=number], input[type=text], select{
+    width:100%; padding:10px; border:1px solid var(--line); border-radius:10px;
+    font-size:16px; color:var(--ink); background:#fff;}
+  .full{grid-column:1/-1;}
+  .hint{font-size:12px; color:var(--muted); margin-top:6px;}
+
+  /* Startup banner for question count */
+  .build{display:flex; gap:10px; align-items:flex-end; flex-wrap:wrap;}
+  .build .grow{flex:1; min-width:120px;}
+  .bBtn{background:var(--blue); color:#fff; border-radius:12px; padding:12px 18px;
+    font-size:16px; font-weight:600; white-space:nowrap;}
+  .bBtn:active{transform:translateY(1px);}
+
+  /* Paper rows */
+  .paper{display:flex; align-items:center; justify-content:space-between;
+    gap:10px; border:1px solid var(--line); border-radius:12px; padding:12px 14px; margin-bottom:10px;}
+  .paper .t{font-weight:600;}
+  .paper .m{font-size:12px; color:var(--muted);}
+  .paper .best{font-size:12px; color:var(--green); font-weight:600;}
+  .paper .btns{display:flex; gap:8px; flex-wrap:wrap;}
+  .mini{background:#eef2f7; border-radius:10px; padding:8px 12px; font-size:14px; font-weight:600;}
+  .mini.alt{background:var(--blue); color:#fff;}
+  .mini.danger{background:var(--red-soft); color:var(--red);}
+
+  /* Toggle switch */
+  .switch{display:inline-flex; align-items:center; gap:8px; user-select:none;}
+  .switch input{display:none;}
+  .sw-track{width:42px; height:24px; border-radius:999px; background:#d1d5db;
+    position:relative; transition:.2s; flex:none;}
+  .sw-track::after{content:""; position:absolute; top:3px; left:3px; width:18px; height:18px;
+    border-radius:50%; background:#fff; transition:.2s;}
+  .switch input:checked + .sw-track{background:var(--green);}
+  .switch input:checked + .sw-track::after{left:21px;}
+
+  /* ================= QUIZ ================= */
+  .topbar{display:flex; align-items:center; justify-content:space-between;
+    gap:8px; flex-wrap:wrap; margin-bottom:12px;}
+  .chip{background:#fff; border:1px solid var(--line); border-radius:999px;
+    padding:6px 12px; font-size:13px; font-weight:600;}
+  .chip.warn{color:var(--red); border-color:var(--red);}
+  .live-score{background:var(--slate); color:#fff;}
+  .ai-btn{background:#7c3aed; color:#fff; border-radius:999px; padding:6px 12px; font-size:13px;}
+  .ai-btn:disabled{background:#c4b5fd; cursor:not-allowed;}
+
+  .qcard{background:#fff; border:1px solid var(--line); border-radius:var(--radius); padding:18px;}
+  .qno{font-size:13px; color:var(--muted); font-weight:700; letter-spacing:.4px; margin-bottom:6px;}
+  .qtext{font-size:21px; font-weight:600; margin-bottom:6px;}
+  .qwords{font-size:13px; color:var(--amber); background:var(--amber-soft);
+    display:inline-block; padding:4px 10px; border-radius:8px; margin-bottom:10px;}
+  .fig{margin:8px 0 6px; text-align:center;}
+
+  .opts{margin-top:8px;}
+  .opt{display:flex; align-items:flex-start; gap:12px; width:100%; text-align:left;
+    border:2px solid var(--line); border-radius:12px; padding:14px 14px;
+    margin-bottom:10px; background:#fff; font-size:18px;}
+  .opt .letter{flex:none; font-weight:800; width:28px; height:28px; border-radius:8px;
+    background:var(--slate); color:#fff; display:flex; align-items:center; justify-content:center; font-size:15px;}
+  .opt .body{flex:1;}
+  .opt.selected{border-color:var(--blue); background:var(--blue-soft);}
+  .opt.selected .letter{background:var(--blue);}
+  .opt.correct{border-color:var(--green); background:var(--green-soft);}
+  .opt.correct .letter{background:var(--green);}
+  .opt.wrong{border-color:var(--red); background:var(--red-soft);}
+  .opt.wrong .letter{background:var(--red);}
+  .opt.dim{opacity:.55;}
+  .opt:disabled{cursor:default;}
+
+  .fb{margin-top:12px; border-radius:12px; padding:12px 14px; font-weight:600; font-size:16px;}
+  .fb.ok{background:var(--green-soft); color:var(--green); border:1px solid var(--green);}
+  .fb.no{background:var(--red-soft); color:var(--red); border:1px solid var(--red);}
+  .fb.skip{background:var(--amber-soft); color:var(--amber); border:1px solid var(--amber);}
+
+  .expl{margin-top:10px; display:flex; gap:8px;}
+  .expl-btn{flex:1; border:1px solid var(--line); border-radius:10px; padding:10px;
+    font-size:14px; font-weight:600; background:#fff;}
+  .expl-btn:hover{background:#f3f4f6;}
+  .expl-btn:disabled{opacity:.4; cursor:not-allowed;}
+
+  /* Dots */
+  .dots{display:flex; flex-wrap:wrap; gap:6px; margin-top:12px;}
+  .dot{width:30px; height:30px; border-radius:8px; border:2px solid var(--line);
+    font-size:12px; font-weight:700; display:flex; align-items:center; justify-content:center; background:#fff;}
+  .dot.cur{border-color:var(--blue); color:var(--blue); box-shadow:0 0 0 2px var(--blue-soft);}
+  .dot.good{background:var(--green); border-color:var(--green); color:#fff;}
+  .dot.bad{background:var(--red); border-color:var(--red); color:#fff;}
+  .dot.skp{background:#e5e7eb; color:#374151;}
+
+  /* Bottom controls */
+  .controls{position:sticky; bottom:0; background:#fff; border:1px solid var(--line);
+    border-radius:var(--radius); padding:10px 12px; margin-top:14px;
+    display:flex; gap:8px; flex-wrap:wrap;}
+  .ctr{flex:1; min-width:72px; border-radius:10px; padding:12px 8px;
+    font-size:15px; font-weight:700;}
+  .ctr.ghost{background:#eef2f7;}
+  .ctr.ghost small{display:block; font-weight:500; font-size:11px; color:var(--muted);}
+  .ctr.primary{background:var(--blue); color:#fff;}
+  .ctr.end{background:var(--slate); color:#fff;}
+  .ctr.skip{background:var(--amber-soft); color:var(--amber);}
+  .ctr:disabled{opacity:.45; cursor:not-allowed;}
+
+  /* ================= RESULTS ================= */
+  .score-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(130px,1fr)); gap:10px;}
+  .stat{background:#f8fafc; border:1px solid var(--line); border-radius:12px; padding:14px; text-align:center;}
+  .stat .v{font-size:30px; font-weight:800;}
+  .stat .k{font-size:12px; color:var(--muted); margin-top:2px;}
+  .stat.total .v{color:var(--slate);} .stat.good .v{color:var(--green);}
+  .stat.bad .v{color:var(--red);} .stat.skp .v{color:var(--amber);}
+  .msg{margin-top:12px; font-size:17px; font-weight:600;}
+  .msg .ru{display:block; font-size:14px; color:var(--muted); font-weight:500; margin-top:4px;}
+
+  .rv{background:#fff; border:1px solid var(--line); border-radius:12px;
+    padding:12px 14px; margin-bottom:8px; cursor:pointer;}
+  .rv .head{display:flex; justify-content:space-between; gap:8px; font-weight:600; font-size:14px;}
+  .rv .head .st{font-size:12px; padding:2px 8px; border-radius:999px;}
+  .st.c{background:var(--green-soft); color:var(--green);}
+  .st.w{background:var(--red-soft); color:var(--red);}
+  .st.s{background:var(--amber-soft); color:var(--amber);}
+  .rv .det{display:none; margin-top:10px; font-size:15px;}
+  .rv.open .det{display:block;}
+  .det .row{margin-bottom:6px;}
+  .det .lstep{background:#f8fafc; border:1px solid var(--line); border-radius:8px;
+    padding:8px 10px; margin-top:6px; font-size:14px;}
+  .det .lstep:first-of-type{margin-top:4px;}
+
+  /* Modal */
+  .overlay{position:fixed; inset:0; background:rgba(15,23,42,.55);
+    display:none; align-items:center; justify-content:center; padding:16px; z-index:50;}
+  .overlay.show{display:flex;}
+  .modal{background:#fff; border-radius:var(--radius); max-width:640px; width:100%;
+    max-height:86vh; overflow-y:auto; padding:18px; position:relative;}
+  .modal h3{margin-bottom:10px; padding-right:36px;}
+  .close{position:absolute; top:12px; right:12px; font-size:20px; width:34px; height:34px;
+    border-radius:8px; background:#f3f4f6;}
+  .modal .label{font-size:13px; font-weight:700; margin:12px 0 6px;}
+  .airun{background:#f5f3ff; border:1px solid #ddd6fe; border-radius:12px; padding:12px 14px;
+    white-space:pre-wrap; font-size:16px;}
+  .airun .raw{display:block; font-size:13px; color:var(--muted); margin-bottom:8px; font-style:italic;}
+
+  .toast{position:fixed; left:50%; bottom:24px; transform:translateX(-50%);
+    background:var(--slate); color:#fff; border-radius:12px; padding:12px 18px;
+    font-size:15px; opacity:0; pointer-events:none; transition:.25s; z-index:60;}
+  .toast.show{opacity:1;}
+  .fee{text-align:center; color:var(--muted); font-size:12px; margin-top:14px;}
+</style>
+</head>
+<body>
+<div class="wrap" id="app"></div>
+<div class="overlay" id="overlay"><div class="modal" id="modal"></div></div>
+<div class="toast" id="toast"></div>
+
+<script src="questions.js"></script>
+<script src="papers.js"></script>
+<script>
+"use strict";
+
+/* ============ Safe localStorage ============ */
+var LS_KEY = "icats.prep.v1";
+function loadLS(){ try{ var raw = localStorage.getItem(LS_KEY); return raw ? JSON.parse(raw) : {}; }
+  catch(e){ return {}; } }
+function saveLS(obj){ try{ localStorage.setItem(LS_KEY, JSON.stringify(obj)); }catch(e){} }
+
+var store = Object.assign({ settings:{}, bests:{}, fixed:{}, adds:[] }, loadLS());
+function persist(){ saveLS(store); }
+
+/* ============ Settings ============ */
+var DEF = {
+  pc: 5, pw: -1, ps: 0, mins: 75, noLimit: false,
+  explAfter: true, aiOn: true, key: "", model: "gemini-3-flash-preview"
+};
+function setS(){ store.settings = Object.assign({}, DEF, store.settings); return store.settings; }
+function bank(){ // merged: shipped + locally added
+  var ids={}; var out=window.QUESTIONS.slice();
+  (store.adds || []).forEach(function(q){ if(!ids[q.id]){ out.push(q); ids[q.id]=1; } });
+  return out;
+}
+function qById(id){
+  var b = bank();
+  for(var i=0;i<b.length;i++) if(b[i].id===id) return b[i];
+  return null;
+}
+
+/* ============ Paper construction ============ */
+function buildFixed(paper){
+  var qs=[]; paper.qids.forEach(function(id){ var q=qById(id); if(q) qs.push(q); });
+  return qs;
+}
+var DISTS = {
+  exam:  {label:"Exam-like (40 easy / 45 medium / 15 hard)", easy:.40, med:.45, hard:.15},
+  soft:  {label:"Soft — mostly easy",                        easy:.55, med:.35, hard:.10},
+  hard:  {label:"Hard practice",                             easy:.25, med:.45, hard:.30}
+};
+function shuffle(a){ var t=a.slice(), i, j, x;
+  for(i=t.length-1;i>0;i--){ j=Math.floor(Math.random()*(i+1)); x=t[i]; t[i]=t[j]; t[j]=x; } return t; }
+function buildGenerated(count, distKey){
+  var b = bank();
+  var dist = DISTS[distKey] || DISTS.exam;
+  var g = { easy:[], medium:[], hard:[] };
+  b.forEach(function(q){ (g[q.difficulty]||g.medium).push(q); });
+  var pick = function(list, n){ return shuffle(list).slice(0, n); };
+  var wantE = Math.max(1, Math.round(count*dist.easy));
+  var wantM = Math.max(0, Math.round(count*dist.med));
+  var wantH = Math.max(0, count - wantE - wantM);
+  var qs = pick(g.easy,Math.min(wantE,g.easy.length))
+        .concat(pick(g.medium,Math.min(wantM,g.medium.length)))
+        .concat(pick(g.hard,Math.min(wantH,g.hard.length)));
+  // ensure the classic "every-year" categories if the bank has them
+  var must = ["money","time","calendar","data","patterns","logic"];
+  var have = {}; qs.forEach(function(q){ have[q.category]=1; });
+  must.forEach(function(cat){
+    if(!have[cat]){
+      var one = g.easy.filter(function(q){ return q.category===cat; })[0] ||
+                g.medium.filter(function(q){ return q.category===cat; })[0]
+                || g.hard.filter(function(q){ return q.category===cat; })[0];
+      if(one && qs.indexOf(one)<0){ qs.pop(); qs.push(one); }
+    }
+  });
+  return qs.slice(0, count);
+}
+
+/* ============ Attempt state ============ */
+var attempt = null; // {title, mode, qs:[{q,status,choice,correct,gained}], idx, startedAt, endsAt, ending}
+function newAttempt(title, mode, questions, timedMins){
+  attempt = {
+    title: title, mode: mode, idx: 0, ending: false,
+    qs: questions.map(function(q){ return {
+      q: q, status: "unanswered", choice: null, correct: false, gained: 0
+    }; }),
+    startedAt: Date.now(), timedMins: timedMins
+  };
+  startTimerState(timedMins);
+}
+function startTimerState(mins){
+  clearTimer();
+  timeLen = mins && mins>0 ? mins*60*1000 : 0;
+  timeStart = Date.now();
+}
+function score(){ var s=0; attempt.qs.forEach(function(a){ s+=a.gained; }); return s; }
+function answeredCount(){ var n=0; attempt.qs.forEach(function(a){ if(a.status!=="unanswered") n++; }); return n; }
+
+/* ============ Countdown to exam (23 Sep 2026) ============ */
+function daysLeft(){
+  var now = new Date(), exam = new Date(2026, 8, 23); // month 8 = September
+  var ms = exam - now; if(ms<=0) return "Exam ka din aa gaya — aap tayyar hain!";
+  var d = Math.ceil(ms/86400000);
+  return "Exam: 23 September 2026 — " + d + " din baqi";
+}
+
+/* ============ Rendering ============ */
+var app = document.getElementById("app");
+
+function esc(s){ return String(s).replace(/[&<>"']/g, function(c){
+  return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]; }); }
+
+function figureHtml(q){
+  if(!q || !q.figure) return "";
+  if(q.figure === "clock" && q.fig){
+    var h = q.fig.h||12, m = q.fig.m||0;
+    var ha = (h%12)*30 + m*0.5, ma = m*6;
+    var hx = 60 + 30*Math.sin(ha*Math.PI/180), hy = 60 - 30*Math.cos(ha*Math.PI/180);
+    var mx = 60 + 42*Math.sin(ma*Math.PI/180), my = 60 - 42*Math.cos(ma*Math.PI/180);
+    return '<span class="fig"><svg width="130" height="130" viewBox="0 0 120 120">'
+      + '<circle cx="60" cy="60" r="55" fill="#fff" stroke="#1f2937" stroke-width="4"/>'
+      + '<circle cx="60" cy="60" r="2.5" fill="#1f2937"/>'
+      + '<line x1="60" y1="60" x2="'+hx.toFixed(1)+'" y2="'+hy.toFixed(1)+'" stroke="#1f2937" stroke-width="6" stroke-linecap="round"/>'
+      + '<line x1="60" y1="60" x2="'+mx.toFixed(1)+'" y2="'+my.toFixed(1)+'" stroke="#1f2937" stroke-width="3" stroke-linecap="round"/>'
+      + '</svg></span>';
+  }
+  return "";
+}
+
+function renderHome(){
+  var s = setS();
+  var dists = Object.keys(DISTS).map(function(k){
+    return '<option value="'+k+'">'+esc(DISTS[k].label)+'</option>'; }).join("");
+  var html = '<header><h1>Aaira\'s ICATS Prep</h1>'
+    + '<div class="sub">Maths Contest · Grade 3-4 · Student: Aaira Ashif</div>'
+    + '<span class="count">'+esc(daysLeft())+'</span></header>';
+
+  /* Settings */
+  html += '<div class="card"><h2>Settings <small>(quiz rules — sab papers par lagte hain)</small></h2>'
+    + '<div class="grid2">'
+    + '<div><label>Correct (+)</label><input type="number" id="set_pc" value="'+s.pc+'"></div>'
+    + '<div><label>Wrong (−)</label><input type="number" id="set_pw" value="'+s.pw+'"></div>'
+    + '<div><label>Skip (0)</label><input type="number" id="set_ps" value="'+s.ps+'"></div>'
+    + '<div><label>Minutes per paper</label><input type="number" id="set_mins" value="'+s.mins+'" min="1"></div>'
+    + '</div>'
+    + '<div class="grid2" style="margin-top:10px">'
+    + '<div class="full" style="display:flex; gap:16px; align-items:center; flex-wrap:wrap;">'
+    + '<label class="switch"><input type="checkbox" id="set_nolimit"'+(s.noLimit?" checked":"")+'>'
+    + '<span class="sw-track"></span><span>No time limit (unlimited time)</span></label>'
+    + '<label class="switch"><input type="checkbox" id="set_explafter"'+(s.explAfter?" checked":"")+'>'
+    + '<span class="sw-track"></span><span>Show (?) explanations only after answering</span></label>'
+    + '</div>'
+    + '</div>'
+    + '<div class="grid2" style="margin-top:10px">'
+    + '<div class="full"><label>Gemini API key <span style="font-weight:400">(optional — AI help)</span></label>'
+    + '<input type="text" id="set_key" value="'+esc(s.key)+'" placeholder="paste key from aistudio.google.com"></div>'
+    + '<div><label>AI model</label><input type="text" id="set_model" value="'+esc(s.model)+'"></div>'
+    + '<div style="display:flex; align-items:flex-end; padding-bottom:6px;">'
+    + '<label class="switch"><input type="checkbox" id="set_aion"'+(s.aiOn?" checked":"")+'>'
+    + '<span class="sw-track"></span><span>AI Help On</span></label></div>'
+    + '</div></div>';
+
+  /* Custom paper builder */
+  var nMax = Math.max(5, bank().length);
+  html += '<div class="card"><h2>Naya Paper — khud banayen <small>(custom)</small></h2>'
+    + '<div class="build">'
+    + '<div class="grow"><label>How many questions? (max '+nMax+' right now)</label>'
+    + '<input type="number" id="gen_n" min="1" max="'+nMax+'" value="'+Math.min(10, nMax)+'"></div>'
+    + '<div class="grow"><label>Difficulty mix</label><select id="gen_dist">'+dists+'</select></div>'
+    + '<button class="bBtn" onclick="startGenerated()">Start &#9654;</button>'
+    + '</div>'
+    + '<div class="hint">Easy questions pehle, hard aakhir mein — jaise asli exam (analysis 2021–2025).</div></div>';
+
+  /* Fixed papers */
+  html += '<div class="card"><h2>Fixed Papers <small>(exam-style sets)</small></h2>';
+  var any = false;
+  window.PAPERS.forEach(function(p){
+    var qs = buildFixed(p);
+    if(!qs.length) return;
+    any = true;
+    var best = store.bests && store.bests[p.id];
+    var trying = store.fixed && store.fixed[p.id];
+    var btn = trying
+      ? '<button class="mini alt" onclick="startFixed(\''+p.id+'\')">Continue</button>'
+      : '<button class="mini alt" onclick="startFixed(\''+p.id+'\')">Start</button>';
+    html += '<div class="paper"><div><div class="t">'+esc(p.title)+'</div>'
+      + '<div class="m">'+qs.length+' questions'+(p.note?' · '+esc(p.note):'')+'</div>'
+      + (best!=null?'<div class="best">Best score: '+best+'</div>':"")
+      + '</div><div class="btns">'+btn
+      + (trying?'<button class="mini danger" onclick="resetFixed(\''+p.id+'\')">Restart</button>':"")
+      + '</div></div>';
+  });
+  if(!any) html += '<div class="hint">Koi fixed paper save nahi hai — custom builder use karein.</div>';
+  html += '</div>';
+
+  html += '<div class="fee">Offline practice sab kaam karta hai. AI help ke liye internet + API key chahiye. Key sirf aap ke browser mein rehti hai.</div>';
+  app.innerHTML = html;
+}
+
+function collectSettings(){
+  var s = setS();
+  s.pc = num("set_pc", 5); s.pw = num("set_pw", -1); s.ps = num("set_ps", 0);
+  s.mins = num("set_mins", 75); s.noLimit = !!$("set_nolimit").checked;
+  s.explAfter = !!$("set_explafter").checked;
+  s.key = ($("set_key").value||"").trim(); s.model = ($("set_model").value||"").trim() || DEF.model;
+  s.aiOn = !!$("set_aion").checked;
+  persist();
+  return s;
+}
+function num(id, d){ var v = parseInt($(id).value,10); return isNaN(v)?d:v; }
+function $(id){ return document.getElementById(id); }
+
+function pluginNames(q){ return "question:\n"+q.q
+  + (q.options ? "\noptions (A,B,C,D):\nA. "+q.options[0]+"\nB. "+q.options[1]+"\nC. "+q.options[2]+"\nD. "+q.options[3] : "")
+  + "\ncorrect answer index: "+q.answer+" ("+q.options[q.answer]+")"; }
+
+/* ============ Quiz ============ */
+function startFixed(id){
+  collectSettings();
+  var p = null; window.PAPERS.forEach(function(x){ if(x.id===id) p=x; });
+  if(!p) return;
+  var qs = buildFixed(p);
+  var saved = store.fixed && store.fixed[id];
+  if(saved && saved.title===p.title && saved.qs.length===qs.length){
+    attempt = saved; attempt.timedMins = setS().noLimit ? 0 : setS().mins;
+    startTimerState(attempt.timedMins);
+  } else {
+    newAttempt(p.title, "fixed", qs, setS().noLimit ? 0 : setS().mins);
+  }
+  renderQuiz();
+}
+function resetFixed(id){ if(confirm("Restart karein? Purana attempt khatam ho jaye ga.")){
+  if(store.fixed) delete store.fixed[id]; persist(); renderHome(); } }
+function startGenerated(){
+  collectSettings();
+  var n = parseInt(("gen_n"&&$("gen_n")?$("gen_n").value:"10"),10);
+  if(isNaN(n)||n<1) n=10;
+  var dist = $("gen_dist") ? $("gen_dist").value : "exam";
+  var qs = buildGenerated(n, dist);
+  if(!qs.length){ toast("Bank mein abhi questions nahi hain."); return; }
+  newAttempt("Custom Paper ("+qs.length+" Q)", "generated", qs, setS().noLimit ? 0 : setS().mins);
+  renderQuiz();
+}
+
+function statusDotClass(a){
+  if(a.status==="answered") return a.correct ? "good" : "bad";
+  if(a.status==="skipped") return "skp";
+  return "";
+}
+function answerChip(a){
+  return a.status==="answered"
+    ? (a.correct ? "+"+setS().pc+" correct" : String(setS().pw)+" wrong")
+    : (a.status==="skipped" ? "0 skipped" : "unanswered");
+}
+
+function renderQuiz(){
+  var s = setS();
+  var C = attempt.qs.length;
+  var A = attempt.qs[attempt.idx];
+  var d = C - answeredCount();
+  var dots = attempt.qs.map(function(a,i){
+    var cls = statusDotClass(a) + (i===attempt.idx?" cur":"");
+    return '<button class="dot '+cls+'" onclick="goTo('+i+')">'+(i+1)+'</button>';
+  }).join("");
+
+  var locked = A.status === "answered" || A.status === "skipped";
+  var opts = A.q.options.map(function(op,i){
+    var cls = "opt";
+    var disabled = "";
+    if(locked){
+      if(i===A.q.answer) cls += " correct";
+      else if(i===A.choice) cls += " wrong";
+      else cls += " dim";
+      disabled = " disabled";
+    } else if(i===A.choice){ cls += " selected"; }
+    return '<button class="'+cls+'" '+disabled+' onclick="choose('+i+')">'
+      + '<span class="letter">'+"ABCD"[i]+'</span><span class="body">'+esc(op)+'</span></button>';
+  }).join("");
+
+  var fb = "";
+  if(A.status==="answered") fb = A.correct
+    ? '<div class="fb ok">&#10003; Sahi! +'+s.pc+'</div>'
+    : '<div class="fb no">&#10007; Ghalat. '+s.pw+' marks. Sahi jawab: '+esc(A.q.options[A.q.answer])+'</div>';
+  else if(A.status==="skipped") fb = '<div class="fb skip">Skip — 0 marks. Wapis aa kar jawab de sakti hain.</div>';
+
+  var explDisabled = s.explAfter && !locked;
+  var aiOk = s.aiOn && s.key;
+
+  app.innerHTML =
+    '<div class="topbar">'
+    + '<span class="chip">'+esc(attempt.title)+'</span>'
+    + '<span class="chip">Q '+(attempt.idx+1)+' / '+C+'</span>'
+    + '<span class="chip live-score">Score: '+score()+'</span>'
+    + '<span class="chip'+(timeLeft()>=0&&timeLeft()<60?" warn":"")+'" id="timerChip">'+timeStr()+'</span>'
+    + '<button class="ai-btn" id="aiB" onclick="openAI()"'+(aiOk?"":" disabled")+'>AI Help</button>'
+    + '</div>'
+    + '<div class="qcard">'
+    + '<div class="qno">QUESTION '+(attempt.idx+1)+' — '+A.q.difficulty.toUpperCase()+' · '+esc(A.q.category)+'</div>'
+    + '<div class="qtext">'+esc(A.q.q)+'</div>'
+    + figureHtml(A.q)
+    + (A.q.words?'<span class="qwords">Danger word: '+esc(A.q.words)+'</span>':"")
+    + '<div class="opts">'+opts+'</div>'
+    + fb
+    + '<div class="expl">'
+    + '<button class="expl-btn" id="eqB" onclick="showExplain(\'q\')"'+(explDisabled?" disabled":"")+'>(?) Sawal samjhao</button>'
+    + '<button class="expl-btn" id="eaB" onclick="showExplain(\'a\')"'+(explDisabled?" disabled":"")+'>(?) Jawab samjhao — steps</button>'
+    + '</div>'
+    + '</div>'
+    + '<div class="dots">'+dots+'</div>'
+    + '<div class="controls">'
+    + '<button class="ctr ghost" onclick="home()">&#8592; Home<br><small>papers</small></button>'
+    + '<button class="ctr ghost" onclick="restartAttempt()">Restart</button>'
+    + '<button class="ctr ghost" onclick="goTo(attempt.idx-1)"'+(attempt.idx<=0?" disabled":"")+'>&#8592; Previous<br><small>peeche</small></button>'
+    + '<button class="ctr skip" onclick="doSkip()"'+(locked?" disabled":"")+'>Skip<br><small>chhor do (0)</small></button>'
+    + '<button class="ctr primary" id="nextBtn" onclick="doNext()">Next &#8594;<br><small>aagay</small></button>'
+    + '<button class="ctr end" onclick="doEnd()">End<br><small>khatam</small></button>'
+    + '</div>'
+    + (d>0?'<div class="fee">'+d+' question abhi baqi hain.</div>':'');
+
+  attachTimer();
+}
+
+function choose(i){
+  var A = attempt.qs[attempt.idx];
+  if(A.status==="answered" || A.status==="skipped") return;
+  A.choice = i;
+  renderQuiz();
+}
+function doNext(){
+  var A = attempt.qs[attempt.idx];
+  if(A.status==="answered" || A.status==="skipped"){ goTo(attempt.idx+1); return; }
+  var s = setS();
+  if(A.choice != null){
+    A.correct = (A.choice === A.q.answer);
+    A.status = "answered";
+    A.gained = A.correct ? s.pc : s.pw;
+  } else {
+    A.status = "skipped"; A.gained = s.ps;
+  }
+  saveAttempt();
+  if(attempt.idx === attempt.qs.length-1){ renderQuiz(); setTimeout(renderResults, 600); return; }
+  renderQuiz();
+  setTimeout(function(){ goTo(attempt.idx+1); }, 650);
+}
+function doSkip(){
+  var A = attempt.qs[attempt.idx];
+  if(A.status!=="unanswered") return;
+  A.status="skipped"; A.choice=null; A.gained=setS().ps;
+  saveAttempt();
+  if(attempt.idx===attempt.qs.length-1){ renderResults(); return; }
+  goTo(attempt.idx+1);
+}
+function goTo(i){
+  if(i<0||i>=attempt.qs.length) return;
+  attempt.idx=i; renderQuiz();
+}
+function doEnd(){
+  if(attempt && (answeredCount()<attempt.qs.length)){
+    if(!confirm("End karein? "+ (attempt.qs.length-answeredCount()) +" question ka jawab nahi diya. End karne par result aaye ga.")) return;
+  }
+  saveAttempt(); renderResults();
+}
+function restartAttempt(){
+  if(!confirm("Restart karein? Sab jawab reset ho jayein ge.")) return;
+  var title=attempt.title, mode=attempt.mode, qs=attempt.qs.map(function(a){return a.q;});
+  var mins=attempt.timedMins;
+  newAttempt(title, mode, qs, mins);
+  clearTimer();
+  renderQuiz();
+}
+function saveAttempt(){
+  if(attempt.mode==="fixed"){
+    store.fixed = store.fixed||{};
+    store.fixed[attempt.title ] = attempt;
+    // keyed by id: we only have title; find paper id
+    window.PAPERS.forEach(function(p){ if(p.title===attempt.title) store.fixed[p.id]=attempt; });
+    delete store.fixed[attempt.title];
+    persist();
+  }
+}
+
+/* ============ Timer ============ */
+var timerInt=null, timeStart=0, timeLen=0;
+function attachTimer(){
+  if(timerInt) return;
+  if(timeLen<=0){ var c=document.getElementById("timerChip"); if(c) c.textContent="No limit"; return; }
+  tick();
+  timerInt=setInterval(tick, 1000);
+}
+function tick(){
+  var el=document.getElementById("timerChip"); if(!el) return;
+  if(timeLen<=0){ el.textContent="No limit"; clear(); return; }
+  var left=timeLen-(Date.now()-timeStart);
+  if(left<=0){ el.textContent="0:00"; clear(); toast("Time khatam! Result dekh rahe hain."); renderResults(); return; }
+  var m=Math.floor(left/60000), s=Math.floor((left%60000)/1000);
+  el.textContent=m+":"+String(s).padStart(2,"0");
+  el.className="chip"+(left<60000?" warn":"");
+}
+function timeStr(){ if(timeLen<=0) return "No limit";
+  var left=timeLen-(Date.now()-timeStart); if(left<=0) return "0:00";
+  var m=Math.floor(left/60000), s=Math.floor((left%60000)/1000);
+  return m+":"+String(s).padStart(2,"0"); }
+function timeLeft(){ if(timeLen<=0) return Infinity; return timeLen-(Date.now()-timeStart); }
+function clear(){ if(timerInt){ clearInterval(timerInt); timerInt=null; } }
+function clearTimer(){ clear(); }
+
+/* ============ Explain (pre-written) ============ */
+function showExplain(which){
+  var A=attempt.qs[attempt.idx];
+  var q=A.q;
+  if(which==="q"){
+    openModal('<h3>Sawal samjhao — Simple wording</h3>'
+      +'<p style="font-size:17px">'+esc(q.explainQ)+'</p>'
+      +(q.words?'<p style="margin-top:10px" class="qwords">Danger word: '+esc(q.words)+'</p>':""));
+  } else {
+    var steps=q.explainA.map(function(st){ return '<div class="lstep">'+esc(st)+'</div>'; }).join("");
+    openModal('<h3>Jawab samjhao — Steps</h3>'
+      +'<div style="font-size:15px;color:var(--muted);margin-bottom:8px">Sahi jawab: '+esc(q.options[q.answer])+'</div>'
+      +steps);
+  }
+}
+
+/* ============ Modal ============ */
+function openModal(html){ document.getElementById("modal").innerHTML=html
+  +'<button class="close" onclick="closeModal()">&#10005;</button>';
+  document.getElementById("overlay").classList.add("show"); }
+function closeModal(){ document.getElementById("overlay").classList.remove("show"); }
+document.getElementById("overlay").addEventListener("click", function(e){
+  if(e.target===this) closeModal(); });
+
+function toast(t){ var el=document.getElementById("toast"); el.textContent=t;
+  el.classList.add("show"); setTimeout(function(){ el.classList.remove("show"); },2600); }
+
+/* ============ AI Help ============ */
+function openAI(){
+  var s=collectSettings();
+  if(!s.aiOn){ alert("Settings mein AI Help On karein."); return; }
+  if(!s.key){ alert("Pehle Gemini API key daalen — aistudio.google.com par free key milti hai."); return; }
+  var A=attempt?attempt.qs[attempt.idx]:null;
+  var cur = A ? A.q.q : "";
+  openModal('<h3>AI Help — Roman Urdu</h3>'
+    +'<div class="label">Current question</div>'
+    +'<div style="background:#f8fafc;border:1px solid var(--line);border-radius:10px;padding:10px;font-size:15px">'+esc(cur)+'</div>'
+    +'<div class="label">Kya chahiye?</div>'
+    +'<button class="bBtn" style="width:100%;margin-bottom:8px" onclick="askAI(\'q\')">(?) Sawal samjhao — AI</button>'
+    +'<button class="bBtn" style="width:100%;margin-bottom:8px;background:var(--green)" onclick="askAI(\'a\')">(?) Jawab samjhao + steps — AI</button>'
+    +'<div class="label">Ya apna sawal likho (kisi bhi paper ka)</div>'
+    +'<textarea id="aiCustom" rows="3" style="width:100%;border:1px solid var(--line);border-radius:10px;padding:10px;font-size:15px"></textarea>'
+    +'<button class="bBtn" style="width:100%;margin-top:8px" onclick="askAI(\'custom\')">Poocho</button>'
+    +'<div class="airun" id="aiOut" style="margin-top:12px;display:none">…</div>'
+    +'<div class="hint">Roman Urdu, easy words. Free tier = thora slow ho sakta hai.</div>');
+}
+function askAI(mode){
+  var s=collectSettings();
+  var out=document.getElementById("aiOut");
+  var q=attempt.qs[attempt.idx].q;
+  if(mode==="custom"){
+    var t=document.getElementById("aiCustom").value.trim();
+    if(!t){ toast("Pehle sawal likho."); return; }
+    q=t;
+  }
+  out.style.display="block"; out.textContent="AI soch raha hai… (thora wait karein)";
+  var prompt =
+    (mode==="q"
+      ? "Explain ONLY what this math question is asking, in very simple Roman Urdu. 2-3 short sentences. Do not give the answer.\n\n"
+      : (mode==="a"
+          ? "Explain this math question's solution step by step in very simple Roman Urdu. First 1 sentence: what it asks. Then numbered math steps. Give the final answer clearly.\n\n"
+          : "Kisi bhi question ka jawab simple Roman Urdu mein step by step samjhao. Pehle 1 line mein batayo sawal kya poochhta hai, phir steps, phir final answer.\n\n"))
+    + q
+    + (mode==="a" && attempt && attempt.qs[attempt.idx] ? "\n\n(sahi answer index: "+attempt.qs[attempt.idx].q.answer+", option: "+attempt.qs[attempt.idx].q.options[attempt.qs[attempt.idx].q.answer]+")" : "")
+    + "\n\nRules: Roman Urdu only (English letters, Urdu words), Grade 3 level, very short simple sentences, max ~150 words.";
+  callGemini(prompt).then(function(text){
+    out.textContent=text;
+  }).catch(function(err){
+    out.textContent="Masla aa gaya. "+msg(err);
+  });
+}
+function msg(err){
+  if(err&&err.quota) return "Free tier ki limit khatam hui — thora tham ke phir try karo.";
+  if(err&&err.net) return "Internet nahi hai ya API key galat hai.";
+  return "AI se jawab nahi mila. Key/model check karein ya thora der baad try karein.";
+}
+function callGemini(prompt){
+  var s=collectSettings();
+  return fetch("https://generativelanguage.googleapis.com/v1beta/models/"+encodeURIComponent(s.model)+":generateContent",{
+    method:"POST",
+    headers:{"Content-Type":"application/json","x-goog-api-key":s.key},
+    body:JSON.stringify({
+      contents:[{parts:[{text:prompt}]}],
+      generationConfig:{temperature:0.4, maxOutputTokens:600}
+    })
+  }).then(function(r){
+    if(!r.ok){
+      if(r.status===429){ var e=new Error("quota"); e.quota=true; throw e; }
+      var e=new Error("http "+r.status); throw e;
+    }
+    return r.json();
+  }).then(function(j){
+    var t=j && j.candidates && j.candidates[0] && j.candidates[0].content
+        && j.candidates[0].content.parts && j.candidates[0].content.parts[0].text;
+    if(!t) throw new Error("empty");
+    return t;
+  }).catch(function(e){
+    if(e&&e.quota) throw e;
+    var ne=new Error("net"); ne.net=true; throw ne;
+  });
+}
+
+/* ============ Results ============ */
+function renderResults(){
+  clearTimer();
+  var s=setS();
+  var n=attempt.qs.length;
+  var total=0, right=0, wro=0, skp=0;
+  attempt.qs.forEach(function(a){
+    total+=a.gained;
+    if(a.status==="answered") a.correct?right++:wro++;
+    else skp++;
+  });
+  var maxPossible = right*s.pc + (n-right)*s.pc;
+  var pct = attempt.qs.length ? Math.round(total/maxPossible*100) : 0;
+  if(attempt.mode==="fixed" && attempt.title){
+    var pid=""; window.PAPERS.forEach(function(p){ if(p.title===attempt.title) pid=p.id; });
+    if(pid){ store.bests=store.bests||{}; if((store.bests[pid]==null)||total>store.bests[pid]) store.bests[pid]=total; persist(); }
+  }
+  var rv = attempt.qs.map(function(a,i){
+    var st = a.status==="answered" ? (a.correct?"c":"w") : "s";
+    var stcls = st==="c"?"c":st==="w"?"w":"s";
+    var stlab = st==="c"?"Correct":"Wrong";
+    if(st==="s") stlab="Skip";
+    var det = '<div class="row"><b>Q'+(i+1)+':</b> '+esc(a.q.q)+'</div>'
+      + (a.q.words?'<div class="qwords">Danger word: '+esc(a.q.words)+'</div>':"")
+      + '<div class="row" style="margin-top:6px">Aap ka jawab: '
+        + (a.choice!=null?esc(a.q.options[a.choice]):"— (skipped)")+'</div>'
+      + '<div class="row">Sahi jawab: <b>'+esc(a.q.options[a.q.answer])+'</b> ('+'ABCD'[a.q.answer]+')</div>'
+      + '<div class="row" style="margin-top:6px;color:var(--blue);font-weight:600">Sawal samjhao:</div>'
+      + '<div>'+esc(a.q.explainQ)+'</div>'
+      + '<div class="row" style="margin-top:8px;color:var(--blue);font-weight:600">Jawab ke steps:</div>'
+      + a.q.explainA.map(function(st){ return '<div class="lstep">'+esc(st)+'</div>'; }).join("");
+    return '<div class="rv" onclick="this.classList.toggle(\'open\')">'
+      + '<div class="head"><span>Q'+(i+1)+' · '+esc(a.q.difficulty)+'</span><span class="st '+stcls+'">'+stlab+' ('+(a.gained>0?"+":"")+a.gained+')</span></div>'
+      + '<div class="det">'+det+'</div></div>';
+  }).join("");
+
+  var msgRu = right>wro ? "Shabash! Aap ne mazeed sahih jawab diye. Aise hi practice karte raho — exam ka din easy lage ga."
+    : (right>0 ? "Achha kiya! Jo ghalat huye wohi asal sabaq hain. Wapis dekh lo aur agla paper lagao."
+      : "Koi baat nahi — abhi sirf shuruaat hai. Har ghalatie eh meaning seekh hai. Agla sawal par try karo!");
+
+  app.innerHTML =
+    '<div class="topbar"><span class="chip">'+esc(attempt.title)+' — Result</span></div>'
+    + '<div class="card"><div class="score-grid">'
+    + '<div class="stat total"><div class="v">'+total+'</div><div class="k">Total marks</div></div>'
+    + '<div class="stat good"><div class="v">'+right+'</div><div class="k">Correct (+'+s.pc+')</div></div>'
+    + '<div class="stat bad"><div class="v">'+wro+'</div><div class="k">Wrong ('+s.pw+')</div></div>'
+    + '<div class="stat skp"><div class="v">'+skp+'</div><div class="k">Skip (0)</div></div>'
+    + '</div>'
+    + '<div class="msg">'+msgRu+'</div></div>'
+    + '<div class="card"><h2>Sab questions ki review <small>(tap karke kholein)</small></h2>'
+    + rv + '</div>'
+    + '<div class="controls">'
+    + '<button class="ctr ghost" onclick="home()">&#8592; Back</button>'
+    + '<button class="ctr primary" onclick="restartAttempt()">Restart</button>'
+    + '<button class="ctr ghost" onclick="exportResult()">&#8600; Save result</button>'
+    + '</div>';
+}
+function exportResult(){
+  var lines=["Result — "+attempt.title, "Date: "+new Date().toLocaleString()];
+  lines.push("Total marks: "+score(), "Correct: "+attempt.qs.filter(function(a){return a.correct;}).length,
+    "Wrong: "+attempt.qs.filter(function(a){return a.status==="answered"&&!a.correct;}).length,
+    "Skipped: "+attempt.qs.filter(function(a){return a.status==="skipped";}).length, "");
+  attempt.qs.forEach(function(a,i){
+    lines.push("Q"+(i+1)+": "+a.q.q);
+    lines.push("   Aap: "+(a.choice!=null?a.q.options[a.choice]:"skip")+" | Sahi: "+a.q.options[a.q.answer]);
+  });
+  var blob=new Blob([lines.join("\n")],{type:"text/plain"});
+  var a=document.createElement("a");
+  a.href=URL.createObjectURL(blob); a.download="icats-result.txt";
+  document.body.appendChild(a); a.click(); a.remove();
+}
+function home(){ clearTimer(); attempt=null; renderHome(); }
+
+/* ============ Boot ============ */
+renderHome();
+</script>
+</body>
+</html>

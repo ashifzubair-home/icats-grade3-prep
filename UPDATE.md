@@ -106,9 +106,10 @@ Questions added by an app form are stored in that browser's localStorage and mer
 
 ## 6. Current content
 
-- Bank: **100 questions** (full Practice Sets A–D v2, ids `a01–a25` … `d01–d25`, answers verified against the PDF keys, figures redrawn as SVG, Roman-Urdu explanations for every question).
-- Fixed papers: **Practice Set A / B / C / D (v2)** — all 25 questions each, original exam order.
+- Bank: **200 questions** (full Practice Sets A–D v2 ids `a01–a25` … `d01–d25`; real ICATS past papers **2021, 2022, 2024, 2025** ids `p21xx`, `p22xx`, `p24xx`, `p25xx` — answers from the official bubble-sheet answer keys, figures redrawn as SVG where possible, Roman-Urdu explanations for every question).
+- Fixed papers: **Practice Set A / B / C / D (v2)** plus **ICATS Real Paper 2021 / 2022 / 2024 / 2025** — all 25 questions each, original exam order.
 - Custom papers: built from the whole bank (easy → medium → hard, exam-like mix, must-have categories forced).
+- The 2023 paper exists only as scanned images, so it is not in the bank.
 
 ---
 

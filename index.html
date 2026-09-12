@@ -201,6 +201,29 @@
     white-space:pre-wrap; font-size:16px;}
   .airun .raw{display:block; font-size:13px; color:var(--muted); margin-bottom:8px; font-style:italic;}
 
+  /* AI chat */
+  .aiq{background:#f8fafc; border:1px solid var(--line); border-radius:10px;
+    padding:8px 10px; font-size:14px; margin-bottom:10px; max-height:74px; overflow-y:auto;}
+  .aiq span{font-weight:700; color:var(--muted);}
+  .aitabs{display:flex; gap:8px; margin-bottom:10px;}
+  .aitab{flex:1; background:var(--blue-soft); color:var(--blue); border:1px solid #bfdbfe;
+    border-radius:10px; padding:10px; font-size:14px; font-weight:700;}
+  .aitab.grn{background:var(--green-soft); color:var(--green); border-color:#bbf7d0;}
+  .aitab:active{transform:translateY(1px);}
+  .chat{background:#fbfcfe; border:1px solid var(--line); border-radius:12px; padding:12px;
+    height:min(320px,42vh); overflow-y:auto; display:flex; flex-direction:column; gap:8px;}
+  .msg{max-width:86%; padding:9px 12px; border-radius:12px; font-size:15px;
+    white-space:pre-wrap; word-break:break-word; line-height:1.55;}
+  .msg.ai{background:#fff; border:1px solid var(--line); border-top-left-radius:4px; align-self:flex-start;}
+  .msg.you{background:var(--blue); color:#fff; border-top-right-radius:4px; align-self:flex-end; margin-left:auto;}
+  .msg.ai.err{background:var(--red-soft); color:var(--red); border-color:#fecaca;}
+  .msg.ai.ty{color:var(--muted); font-style:italic;}
+  .aiin{display:flex; gap:8px; margin-top:10px;}
+  .aiin input{flex:1; padding:11px; border:1px solid var(--line); border-radius:10px; font-size:15px;}
+  .aiin .send{background:var(--blue); color:#fff; border-radius:10px; padding:0 18px;
+    font-weight:700; font-size:15px; white-space:nowrap;}
+  .aiin .send:disabled{opacity:.5; cursor:not-allowed;}
+
   .toast{position:fixed; left:50%; bottom:24px; transform:translateX(-50%);
     background:var(--slate); color:#fff; border-radius:12px; padding:12px 18px;
     font-size:15px; opacity:0; pointer-events:none; transition:.25s; z-index:60;}
@@ -878,63 +901,103 @@ document.getElementById("overlay").addEventListener("click", function(e){
 function toast(t){ var el=document.getElementById("toast"); el.textContent=t;
   el.classList.add("show"); setTimeout(function(){ el.classList.remove("show"); },2600); }
 
-/* ============ AI Help ============ */
+/* ============ AI Help (chat) ============ */
+var aiChat = [], aiBusy = false;
+function aiSystem(){
+  return "Tum Aaira (Class 3-4) ki ICATS Maths practice mein madad karti ho. "
+    + "Hamesha Roman Urdu mein jawab do — English letters, Urdu words. "
+    + "Choti simple lineen, Grade 3 ka level, max ~150 words. "
+    + "Jahan munasib ho steps mein samjhao. Bula wajah lamba mat likho.";
+}
+function hereQ(){ return attempt && attempt.qs && attempt.qs[attempt.idx] ? attempt.qs[attempt.idx].q : null; }
+function optsText(q){
+  var out=[]; (q.options||[]).forEach(function(o,i){ out.push("ABCD"[i]+". "+o); });
+  return out.join(" | ");
+}
 function openAI(){
   var s=collectSettings();
   if(!s.aiOn){ alert("Settings mein AI Help On karein."); return; }
   if(!s.key){ alert("Pehle Gemini API key daalen — aistudio.google.com par free key milti hai."); return; }
-  var A=attempt?attempt.qs[attempt.idx]:null;
-  var cur = A ? A.q.q : "";
-  openModal('<h3>AI Help — Roman Urdu</h3>'
-    +'<div class="label">Current question</div>'
-    +'<div style="background:#f8fafc;border:1px solid var(--line);border-radius:10px;padding:10px;font-size:15px">'+esc(cur)+'</div>'
-    +'<div class="label">Kya chahiye?</div>'
-    +'<button class="bBtn" style="width:100%;margin-bottom:8px" onclick="askAI(\'q\')">(?) Sawal samjhao — AI</button>'
-    +'<button class="bBtn" style="width:100%;margin-bottom:8px;background:var(--green)" onclick="askAI(\'a\')">(?) Jawab samjhao + steps — AI</button>'
-    +'<div class="label">Ya apna sawal likho (kisi bhi paper ka)</div>'
-    +'<textarea id="aiCustom" rows="3" style="width:100%;border:1px solid var(--line);border-radius:10px;padding:10px;font-size:15px"></textarea>'
-    +'<button class="bBtn" style="width:100%;margin-top:8px" onclick="askAI(\'custom\')">Poocho</button>'
-    +'<div class="airun" id="aiOut" style="margin-top:12px;display:none">…</div>'
-    +'<div class="hint">Roman Urdu, easy words. Free tier = thora slow ho sakta hai.</div>');
+  aiChat=[]; aiBusy=false;
+  var q=hereQ();
+  openModal('<h3>AI Help — Chat (Roman Urdu)</h3>'
+    + (q?'<div class="aiq"><span>Current question:</span> '+esc(q.q)+'</div>':"")
+    + '<div class="aitabs">'
+    + '<button class="aitab" onclick="aiSend(\'q\')">(?) Sawal samjhao</button>'
+    + '<button class="aitab grn" onclick="aiSend(\'a\')">Jawab samjhao + steps</button>'
+    + '</div>'
+    + '<div class="chat" id="aiChat">'
+    + '<div class="msg ai">Hello! Button dabaao — main sawal ka matlab samjhaaoonga ya jawab ke steps bataaonga. Phir mujh se kuch bhi pooch sakti ho, ya neeche likh kar apna sawal bhejo.</div>'
+    + '</div>'
+    + '<div class="aiin">'
+    + '<input id="aiInput" type="text" placeholder="Apna sawal yahan likho…" autocomplete="off">'
+    + '<button class="send" id="aiSendBtn" onclick="aiSend(\'custom\')">Send</button>'
+    + '</div>'
+    + '<div class="hint">Free tier thora slow ho sakta hai. Jawab English letters mein Roman Urdu hota hai.</div>');
+  document.getElementById("aiInput").addEventListener("keydown", function(e){
+    if(e.key==="Enter"){ e.preventDefault(); aiSend("custom"); } });
+  document.getElementById("aiInput").focus();
 }
-function askAI(mode){
-  var s=collectSettings();
-  var out=document.getElementById("aiOut");
-  var q=attempt.qs[attempt.idx].q;
-  if(mode==="custom"){
-    var t=document.getElementById("aiCustom").value.trim();
-    if(!t){ toast("Pehle sawal likho."); return; }
-    q=t;
+function aiSend(mode){
+  if(aiBusy){ toast("Pehla jawab aa jaane do, phir poocho."); return; }
+  var inEl=document.getElementById("aiInput");
+  var text="";
+  if(mode==="q"){
+    var q1=hereQ(); if(!q1){ toast("Koi sawal nahi mil raha."); return; }
+    text="Sawal samjhao — SIRF matlab samjhao, jawab MAT do:\n\n\""+q1.q+"\"\n\nOptions: "+optsText(q1);
+  } else if(mode==="a"){
+    var q2=hereQ(); if(!q2){ toast("Koi sawal nahi mil raha."); return; }
+    text="Jawab samjhao — steps ke sat:\n\n\""+q2.q+"\"\n\nOptions: "+optsText(q2)
+      + "\n\nSahi jawab: "+q2.options[q2.answer]+" (option "+"ABCD"[q2.answer]+")";
+  } else {
+    text=inEl ? inEl.value.trim() : ""; if(!text){ toast("Pehle kuch likho."); if(inEl) inEl.focus(); return; }
+    inEl.value="";
   }
-  out.style.display="block"; out.textContent="AI soch raha hai… (thora wait karein)";
-  var prompt =
-    (mode==="q"
-      ? "Explain ONLY what this math question is asking, in very simple Roman Urdu. 2-3 short sentences. Do not give the answer.\n\n"
-      : (mode==="a"
-          ? "Explain this math question's solution step by step in very simple Roman Urdu. First 1 sentence: what it asks. Then numbered math steps. Give the final answer clearly.\n\n"
-          : "Kisi bhi question ka jawab simple Roman Urdu mein step by step samjhao. Pehle 1 line mein batayo sawal kya poochhta hai, phir steps, phir final answer.\n\n"))
-    + q
-    + (mode==="a" && attempt && attempt.qs[attempt.idx] ? "\n\n(sahi answer index: "+attempt.qs[attempt.idx].q.answer+", option: "+attempt.qs[attempt.idx].q.options[attempt.qs[attempt.idx].q.answer]+")" : "")
-    + "\n\nRules: Roman Urdu only (English letters, Urdu words), Grade 3 level, very short simple sentences, max ~150 words.";
-  callGemini(prompt).then(function(text){
-    out.textContent=text;
+  aiChat.push({role:"user", parts:[{text:text}]});
+  aiBusy=true;
+  var btn=document.getElementById("aiSendBtn"); if(btn) btn.disabled=true;
+  var inDis=document.getElementById("aiInput"); if(inDis) inDis.disabled=true;
+  renderAI(null);
+  askGemini(aiChat).then(function(txt){
+    aiChat.push({role:"model", parts:[{text:txt}]});
+    aiBusy=false; renderAI(null);
   }).catch(function(err){
-    out.textContent="Masla aa gaya. "+msg(err);
+    aiBusy=false; renderAI("Masla aa gaya. "+msg(err));
+  }).then(function(){ var b=document.getElementById("aiSendBtn"); if(b) b.disabled=false;
+    var i=document.getElementById("aiInput"); if(i) i.disabled=false; if(i) i.focus(); });
+}
+function renderAI(errorMsg){
+  var el=document.getElementById("aiChat"); if(!el) return;
+  var html="";
+  aiChat.forEach(function(m){
+    if(m.role==="user") html+='<div class="msg you">'+md(m.parts[0].text)+'</div>';
+    else html+='<div class="msg ai">'+md(m.parts[0].text)+'</div>';
   });
+  if(aiBusy) html+='<div class="msg ai ty">AI soch raha hai… (thora wait karein)</div>';
+  else if(errorMsg) html+='<div class="msg ai err">'+esc(errorMsg)+'</div>';
+  el.innerHTML=html;
+  el.scrollTop=el.scrollHeight;
+}
+function md(t){
+  return String(t)
+    .replace(/[&<>]/g, function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;"}[c]; })
+    .replace(/\*\*([^*]+)\*\*/g, "<b>$1</b>")
+    .replace(/\*([^*]+)\*/g, "<i>$1</i>");
 }
 function msg(err){
   if(err&&err.quota) return "Free tier ki limit khatam hui — thora tham ke phir try karo.";
   if(err&&err.net) return "Internet nahi hai ya API key galat hai.";
   return "AI se jawab nahi mila. Key/model check karein ya thora der baad try karein.";
 }
-function callGemini(prompt){
+function askGemini(contents){
   var s=collectSettings();
   return fetch("https://generativelanguage.googleapis.com/v1beta/models/"+encodeURIComponent(s.model)+":generateContent",{
     method:"POST",
     headers:{"Content-Type":"application/json","x-goog-api-key":s.key},
     body:JSON.stringify({
-      contents:[{parts:[{text:prompt}]}],
-      generationConfig:{temperature:0.4, maxOutputTokens:600}
+      contents: contents,
+      systemInstruction:{parts:[{text:aiSystem()}]},
+      generationConfig:{temperature:0.3, maxOutputTokens:800}
     })
   }).then(function(r){
     if(!r.ok){

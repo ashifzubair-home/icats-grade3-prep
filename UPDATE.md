@@ -106,9 +106,9 @@ Questions added by an app form are stored in that browser's localStorage and mer
 
 ## 6. Current content
 
-- Bank: **10 questions** (from Practice Set A v2, answers verified against the key).
-- Fixed paper: **Practice Set A (v2)** with those 10.
-- Sets B/C/D: paste ids into `papers.js` once imported.
+- Bank: **100 questions** (full Practice Sets A–D v2, ids `a01–a25` … `d01–d25`, answers verified against the PDF keys, figures redrawn as SVG, Roman-Urdu explanations for every question).
+- Fixed papers: **Practice Set A / B / C / D (v2)** — all 25 questions each, original exam order.
+- Custom papers: built from the whole bank (easy → medium → hard, exam-like mix, must-have categories forced).
 
 ---
 

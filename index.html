@@ -229,6 +229,7 @@ var DISTS = {
 };
 function shuffle(a){ var t=a.slice(), i, j, x;
   for(i=t.length-1;i>0;i--){ j=Math.floor(Math.random()*(i+1)); x=t[i]; t[i]=t[j]; t[j]=x; } return t; }
+var dm = {easy:0, medium:1, hard:2};
 function buildGenerated(count, distKey){
   var b = bank();
   var dist = DISTS[distKey] || DISTS.exam;
@@ -252,7 +253,7 @@ function buildGenerated(count, distKey){
       if(one && qs.indexOf(one)<0){ qs.pop(); qs.push(one); }
     }
   });
-  return qs.slice(0, count);
+  return qs.sort(function(a,b){ return (dm[a.difficulty]||1)-(dm[b.difficulty]||1); }).slice(0, count);
 }
 
 /* ============ Attempt state ============ */
@@ -291,19 +292,216 @@ function esc(s){ return String(s).replace(/[&<>"']/g, function(c){
 
 function figureHtml(q){
   if(!q || !q.figure) return "";
-  if(q.figure === "clock" && q.fig){
-    var h = q.fig.h||12, m = q.fig.m||0;
-    var ha = (h%12)*30 + m*0.5, ma = m*6;
-    var hx = 60 + 30*Math.sin(ha*Math.PI/180), hy = 60 - 30*Math.cos(ha*Math.PI/180);
-    var mx = 60 + 42*Math.sin(ma*Math.PI/180), my = 60 - 42*Math.cos(ma*Math.PI/180);
-    return '<span class="fig"><svg width="130" height="130" viewBox="0 0 120 120">'
-      + '<circle cx="60" cy="60" r="55" fill="#fff" stroke="#1f2937" stroke-width="4"/>'
-      + '<circle cx="60" cy="60" r="2.5" fill="#1f2937"/>'
-      + '<line x1="60" y1="60" x2="'+hx.toFixed(1)+'" y2="'+hy.toFixed(1)+'" stroke="#1f2937" stroke-width="6" stroke-linecap="round"/>'
-      + '<line x1="60" y1="60" x2="'+mx.toFixed(1)+'" y2="'+my.toFixed(1)+'" stroke="#1f2937" stroke-width="3" stroke-linecap="round"/>'
-      + '</svg></span>';
-  }
+  var f = q.fig || {};
+  if(q.figure === "clock") return figClock(f);
+  if(q.figure === "grid") return figGrid(f);
+  if(q.figure === "bars") return figBars(f);
+  if(q.figure === "picto") return figPicto(f);
+  if(q.figure === "ruler") return figRuler(f);
+  if(q.figure === "angle") return figAngle(f);
+  if(q.figure === "shape") return figShape(f);
+  if(q.figure === "pattern") return figPattern(f);
+  if(q.figure === "shapes") return figShapes(f);
+  if(q.figure === "triangles5") return figTri5();
+  if(q.figure === "gridcut") return figGridcut(f);
+  if(q.figure === "bucket") return figBucket(f);
   return "";
+}
+
+function figClock(f){
+  var h = f.h||12, m = f.m||0;
+  var ha = (h%12)*30 + m*0.5, ma = m*6;
+  var hx = 60 + 30*Math.sin(ha*Math.PI/180), hy = 60 - 30*Math.cos(ha*Math.PI/180);
+  var mx = 60 + 42*Math.sin(ma*Math.PI/180), my = 60 - 42*Math.cos(ma*Math.PI/180);
+  return '<span class="fig"><svg width="130" height="130" viewBox="0 0 120 120">'
+    + '<circle cx="60" cy="60" r="55" fill="#fff" stroke="#1f2937" stroke-width="4"/>'
+    + '<circle cx="60" cy="60" r="2.5" fill="#1f2937"/>'
+    + '<line x1="60" y1="60" x2="'+hx.toFixed(1)+'" y2="'+hy.toFixed(1)+'" stroke="#1f2937" stroke-width="6" stroke-linecap="round"/>'
+    + '<line x1="60" y1="60" x2="'+mx.toFixed(1)+'" y2="'+my.toFixed(1)+'" stroke="#1f2937" stroke-width="3" stroke-linecap="round"/>'
+    + '</svg></span>';
+}
+
+function figGrid(f){
+  var cols = f.cols||4, rows = f.rows||2, cs = 17;
+  var all = [];
+  for(var i=0;i<cols*rows;i++) all.push(i);
+  var sh = (f.shaded === "all") ? all : (f.shaded||[]);
+  var w = cols*cs, h = rows*cs;
+  var out = '<span class="fig"><svg width="'+(w+2)+'" height="'+(h+2)+'" viewBox="0 0 '+w+' '+h+'">';
+  for(var r=0;r<rows;r++) for(var c=0;c<cols;c++){
+    var idx = r*cols+c, filled = sh.indexOf(idx) !== -1;
+    out += '<rect x="'+c*cs+'" y="'+r*cs+'" width="'+cs+'" height="'+cs+'"'
+      + (filled ? ' fill="#374151"' : ' fill="#fff"') + ' stroke="#1f2937" stroke-width="1"/>';
+  }
+  return out + '</svg></span>';
+}
+
+function figBars(f){
+  var labs = f.labels||[], vals = f.values||[];
+  var max = 1; vals.forEach(function(v){ if(v>max) max=v; });
+  var bw = 24, bwid = bw*(labs.length||1) + 8;
+  var out = '<span class="fig"><svg width="'+bwid+'" height="120" viewBox="0 0 '+bwid+' 120">'
+    + '<line x1="4" y1="100" x2="'+bwid+'" y2="100" stroke="#1f2937" stroke-width="2"/>';
+  labs.forEach(function(l,i){
+    var h = Math.round(vals[i]/max*80);
+    var x = 8 + i*bw;
+    out += '<rect x="'+x+'" y="'+(100-h)+'" width="14" height="'+h+'" fill="#93c5fd" stroke="#1f2937" stroke-width="1.5"/>'
+      + '<text x="'+(x+7)+'" y="112" font-size="9" text-anchor="middle" fill="#1f2937">'+esc(l)+'</text>';
+  });
+  return out + '</svg></span>';
+}
+
+function figPicto(f){
+  var names = f.names||[], per = f.per||1, counts = f.counts||[];
+  var out = '<span class="fig"><div style="font-size:13px;color:#374151">Each circle = '+per+'</div><div>';
+  names.forEach(function(n,i){
+    var c = counts[i]||0;
+    var row = '<svg width="'+(c*12+2)+'" height="12">';
+    for(var j=0;j<c;j++) row += '<circle cx="'+(j*12+6)+'" cy="6" r="5.5" fill="#bae6fd" stroke="#1f2937" stroke-width="1.2"/>';
+    row += '</svg>';
+    out += '<div style="display:flex;align-items:center;gap:8px;margin:3px 0">'
+      + '<span style="min-width:52px">'+esc(n)+'</span>'+row+'</div>';
+  });
+  return out + '</div></span>';
+}
+
+function figRuler(f){
+  var line = f.line||8.5, w = 14*14;
+  var out = '<span class="fig"><svg width="'+w+'" height="70" viewBox="0 0 '+w+' 70">';
+  out += '<line x1="14" y1="20" x2="'+(14+line*14).toFixed(1)+'" y2="20" stroke="#b91c1c" stroke-width="3"/>';
+  out += '<rect x="14" y="30" width="'+(w-14*2-10)+'" height="24" fill="#fff" stroke="#1f2937" stroke-width="2"/>';
+  var i;
+  for(i=0;i<=13;i++){
+    var x = 14 + i*14;
+    var th = (i%5===0) ? 14 : 8;
+    out += '<line x1="'+x+'" y1="30" x2="'+x+'" y2="'+(30+th)+'" stroke="#1f2937" stroke-width="1.2"/>';
+    if(i%2===0) out += '<text x="'+x+'" y="50" font-size="8" text-anchor="middle">'+i+'</text>';
+  }
+  return out + '</svg></span>';
+}
+
+function figAngle(f){
+  var deg = f.deg||90;
+  var rad = deg*Math.PI/180;
+  var x = 70+52*Math.cos(rad), y = 70-52*Math.sin(rad);
+  var out = '<span class="fig"><svg width="150" height="130" viewBox="0 0 150 120">'
+    + '<line x1="70" y1="70" x2="122" y2="70" stroke="#1f2937" stroke-width="3"/>'
+    + '<line x1="70" y1="70" x2="'+x.toFixed(1)+'" y2="'+y.toFixed(1)+'" stroke="#1f2937" stroke-width="3"/>';
+  if(deg === 90){
+    out += '<path d="M88 70 V52 H70" fill="none" stroke="#1f2937" stroke-width="2"/>'
+      + '<text x="60" y="48" font-size="12" fill="#1f2937">90\u00b0</text>';
+  } else {
+    out += '<path d="M 70 70 L 86 70 A 16 16 0 0 0 77.7 54.9 Z" fill="none" stroke="#1f2937" stroke-width="1.5"/>'
+      + '<text x="88" y="52" font-size="11" fill="#1f2937">'+deg+'\u00b0</text>';
+  }
+  return out + '</svg></span>';
+}
+
+function figPolygon(cx, cy, n, r){
+  var pts = [];
+  for(var i=0;i<n;i++){
+    var a = -Math.PI/2 + i*2*Math.PI/n;
+    pts.push((cx+r*Math.cos(a)).toFixed(1)+","+(cy+r*Math.sin(a)).toFixed(1));
+  }
+  return '<polygon points="'+pts.join(" ")+'" fill="#fef3c7" stroke="#1f2937" stroke-width="2.5"/>';
+}
+
+function figShape(f){
+  var t = f.type||"pentagon", out = '<span class="fig"><svg width="150" height="130" viewBox="0 0 150 120">';
+  if(t === "pentagon") out += figPolygon(75,62,5,48);
+  else if(t === "hexagon") out += figPolygon(75,62,6,48);
+  else if(t === "parallelogram") out += '<polygon points="22,60 98,60 128,95 52,95" fill="#fef3c7" stroke="#1f2937" stroke-width="2.5"/>';
+  else if(t === "triangle"){
+    var A = [75,18], B = [18,100], C = [132,100];
+    out += '<polygon points="' + A[0]+","+A[1] + ' ' + B[0]+","+B[1] + ' ' + C[0]+","+C[1]
+      + '" fill="#fef3c7" stroke="#1f2937" stroke-width="2.5"/>';
+    if(f.angles && f.angles.length === 3){
+      out += '<text x="70" y="26" font-size="11" text-anchor="middle">'+f.angles[0]+'\u00b0</text>'
+        + '<text x="16" y="104" font-size="11" text-anchor="left">'+f.angles[1]+'\u00b0</text>'
+        + '<text x="126" y="104" font-size="11" text-anchor="right">'+f.angles[2]+'\u00b0</text>';
+    }
+  }
+  else out += figPolygon(75,62,5,48);
+  return out + '</svg></span>';
+}
+
+function figPattern(f){
+  var kinds = f.kinds||["triangle","square","pentagon"];
+  var out = '<span class="fig"><svg width="190" height="90" viewBox="0 0 190 80">';
+  for(var i=0;i<kinds.length;i++){
+    var k = kinds[i], x = 10 + i*44;
+    if(k === "triangle") out += '<polygon points="'+(x+22)+',14 '+(x+6)+',52 '+(x+38)+',52" fill="#fef3c7" stroke="#1f2937" stroke-width="2.5"/>';
+    else if(k === "square") out += '<rect x="'+(x+7)+'" y="16" width="30" height="30" fill="#fef3c7" stroke="#1f2937" stroke-width="2.5"/>';
+    else if(k === "pentagon"){
+      var pts = [];
+      for(var p=0;p<5;p++){
+        var a = -Math.PI/2 + p*2*Math.PI/5;
+        pts.push((x+22+19*Math.cos(a)).toFixed(1)+","+(40+19*Math.sin(a)).toFixed(1));
+      }
+      out += '<polygon points="'+pts.join(" ")+'" fill="#fef3c7" stroke="#1f2937" stroke-width="2.5"/>';
+    }
+  }
+  out += '<circle cx="' + (10 + 3*44) + '" cy="38" r="14" fill="#fff" stroke="#1f2937" stroke-width="2" stroke-dasharray="3 3"/>'
+    + '<text x="' + (10 + 3*44) + '" y="43" font-size="14" text-anchor="middle">?</text>';
+  return out + '</svg></span>';
+}
+
+function figShapes(f){
+  var c = (f.c||8), t = (f.t||5);
+  var out = '<span class="fig"><svg width="140" height="120" viewBox="0 0 140 120">';
+  var i, perRow = 4;
+  for(i=0;i<c;i++){
+    var cx = 20 + (i%perRow)*30, cy = 18 + Math.floor(i/perRow)*26;
+    out += '<circle cx="'+cx+'" cy="'+cy+'" r="9" fill="#bae6fd" stroke="#1f2937" stroke-width="1.5"/>';
+  }
+  for(i=0;i<t;i++){
+    var tx = 22 + (i%perRow)*30, ty = 74 + Math.floor(i/perRow)*24;
+    out += '<polygon points="'+tx+','+(ty-10)+' '+(tx-9)+','+(ty+8)+' '+(tx+9)+','+(ty+8)+'" fill="#fed7aa" stroke="#1f2937" stroke-width="1.5"/>';
+  }
+  return out + '</svg></span>';
+}
+
+function figTri5(){
+  var out = '<span class="fig"><svg width="150" height="130" viewBox="0 0 150 120">'
+    + '<polygon points="75,10 15,105 135,105" fill="#fef3c7" stroke="#1f2937" stroke-width="2.5"/>'
+    + '<line x1="75" y1="10" x2="75" y2="105" stroke="#1f2937" stroke-width="1.5"/>'
+    + '<line x1="15" y1="57" x2="75" y2="57" stroke="#1f2937" stroke-width="1.5"/>';
+  return out + '</svg></span>';
+}
+
+function figGridcut(f){
+  var side = f.side||12, cut = f.cut||5, cs = 4.5;
+  var w = side*cs, h = side*cs, buf = 8, bh = Math.ceil(h*0.18);
+  var total = w + buf*2, th = h + buf*2 + bh + 12;
+  var out = '<span class="fig"><svg width="'+total+'" height="'+th+'" viewBox="0 0 '+total+' '+th+'">';
+  for(var r=0;r<side;r++) for(var c2=0;c2<side;c2++){
+    var inCut = (r < cut) && (c2 >= side-cut);
+    if(inCut) continue;
+    out += '<rect x="'+(buf+c2*cs)+'" y="'+(buf+r*cs)+'" width="'+cs+'" height="'+cs+'"'
+      + ' fill="#374151" stroke="#9ca3af" stroke-width="0.4"/>';
+  }
+  for(var r2=0;r2<cut;r2++) for(var c3=0;c3<cut;c3++){
+    var x = buf + (side-cut+c3)*cs, y = buf + r2*cs;
+    out += '<line x1="'+x+'" y1="'+y+'" x2="'+(x+cs)+'" y2="'+(y+cs)+'" stroke="#9ca3af" stroke-width="0.6"/>'
+      + '<line x1="'+(x+cs)+'" y1="'+y+'" x2="'+x+'" y2="'+(y+cs)+'" stroke="#9ca3af" stroke-width="0.6"/>';
+  }
+  out += '<rect x="'+buf+'" y="'+buf+'" width="'+w+'" height="'+h+'" fill="none" stroke="#1f2937" stroke-width="2"/>';
+  return out + '</svg></span>';
+}
+
+function figBucket(f){
+  var max = f.max||15, level = f.level||12;
+  var bh = 78, yTop = 12;
+  var yLevel = yTop + bh - level/max*bh;
+  var out = '<span class="fig"><svg width="120" height="120" viewBox="0 0 120 120">'
+    + '<line x1="30" y1="'+yTop+'" x2="90" y2="'+yTop+'" stroke="#1f2937" stroke-width="3"/>'
+    + '<rect x="33" y="'+yLevel.toFixed(1)+'" width="54" height="'+(112-yLevel).toFixed(1)+'" fill="#60a5fa" opacity="0.75"/>'
+    + '<polygon points="30,'+yTop+' 90,'+yTop+' 84,112 36,112" fill="none" stroke="#1f2937" stroke-width="2.5"/>'
+    + '<text x="96" y="'+(yTop+8)+'" font-size="10" fill="#1f2937">'+max+' L</text>'
+    + '<text x="96" y="114" font-size="10" fill="#1f2937">0</text>'
+    + '<line x1="10" y1="'+yTop+'" x2="30" y2="'+yTop+'" stroke="#9ca3af" stroke-width="1"/>'
+    + '<text x="8" y="'+(yTop+6)+'" font-size="9" fill="#9ca3af">'+max+'</text>';
+  return out + '</svg></span>';
 }
 
 function renderHome(){

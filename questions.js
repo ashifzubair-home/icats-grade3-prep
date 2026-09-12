@@ -1,194 +1,745 @@
 /* ============================================================
-   ICATS PREP — QUESTION BANK
-   Add a new question anywhere in the array. Pick a NEW id
-   (keep the pattern: c1, c2, c3 …). Then commit & push.
-
-   Flow for AI / human add:
-   1. Copy the template below, fill it in.
-   2. Paste it into the QUESTION array (before the closing ]);
-   3. In papers.js you may add its id to a fixed set, OR
-      just save the file — the Home "custom paper" builder
-      will already include it.
+   ICATS PREP — QUESTION BANK  (full: Practice Sets A, B, C, D)
+   Adding a question: pick a new id (a26/b26/c26/d26… or n01…),
+   copy the TEMPLATE block, fill it in, save, commit, push.
+   The Home "custom paper" builder picks up new questions
+   automatically; fixed sets are defined in papers.js by id.
 
    difficulty: "easy" | "medium" | "hard"
-   category:   one of  arithmetic | money | time | fraction |
-               geometry | measurement | calendar | patterns |
-               data | logic | reasoning
-   figure:     optional — "clock" (uses fig {h, m}) or "" (none)
+   category:   arithmetic | money | time | fraction | geometry |
+               measurement | calendar | patterns | data | logic | reasoning
+   figure:     ""  or one of:
+                 clock   {h, m}                        analogue clock
+                 grid    {cols, rows, shaded:[cellIdx]}  cells 1 = shaded
+                 bars    {labels:[], values:[]}        bar chart
+                 picto   {names:[], per:N, counts:[]}  pictograph
+                 ruler   {line: cm}                    ruler 0-13 cm
+                 angle   {deg}                         an angle
+                 shape   {type, angles?}               polygon/triangle
+                 pattern {kinds:["triangle","square",...]}
+                 shapes  {kind:"c-t", c:N, t:M}        circles & triangles
+                 triangles5                            classic figure
+                 gridcut {side, cut}                   square minus square
+                 bucket  {max, level}                  water bucket
    answer:     index (0-based) of the correct option
-   words:      "jab bhi sawal mein yeh word aaye = yeh kaam"
+   words:      jab bhi sawal mein yeh word aaye = yeh kaam
    explainQ:   Roman Urdu — is sawal mein kya poocha gaya hai
-   explainA:   steps — har step ek line (big + easy math)
+   explainA:   steps — har step ek line
 
    TEMPLATE
-   {
-     id: "c1",
-     difficulty: "medium",
-     category: "time",
-     q: "Question text here.",
-     options: ["A", "B", "C", "D"],
-     answer: 1,
-     figure: "",
-     fig: {},
-     words: "trap word note",
-     explainQ: "Roman Urdu mein sawal ka matlab.",
-     explainA: ["Step 1: …", "Step 2: …", "Answer: …"]
-   },
+     { id:"n1", difficulty:"medium", category:"time",
+       q:"…", options:["A","B","C","D"], answer:1,
+       figure:"", fig:{}, words:"…",
+       explainQ:"…", explainA:["Step 1","Step 2"] }
    ------------------------------------------------------------ */
 window.QUESTIONS = [
 
-  {
-    id: "b1",
-    difficulty: "easy",
-    category: "arithmetic",
-    q: "Sara bought a bag of beads. She had 1,234 red beads and 2,157 blue beads, but lost 320 beads. How many beads were left in all?",
-    options: ["3071", "3171", "3391", "2971"],
-    answer: 0,
-    figure: "",
-    fig: {},
-    words: "lost / left = minus waala kaam",
-    explainQ: "Sara ke paas red aur blue beads hain. Woh 320 beads kho deti hai. Sawal poochhta hai: sab mila kar ab kitne beads bache?",
-    explainA: ["Pehle saare beads jodo: 1,234 + 2,157 = 3,391", "Phir lost huye 320 nikaal do: 3,391 − 320 = 3,071", "Is liye jawab A — 3071"]
-  },
+  // ============ PRACTICE SET A (v2) — 25 ============
 
-  {
-    id: "b2",
-    difficulty: "easy",
-    category: "arithmetic",
-    q: "If you add 268 to me, I will become 600. Who am I?",
-    options: ["332", "342", "268", "432"],
-    answer: 0,
-    figure: "",
-    fig: {},
-    words: "ulta karo — add ka ulta subtraction hai",
-    explainQ: "Ek number hai. Us mein 268 jodo to 600 ban jaaye. Woh number kaunsa hai?",
-    explainA: ["Yeh sawal ulta karta hai: 600 − 268", "600 − 268 = 332", "Check: 332 + 268 = 600 — sahi hai"]
-  },
+  { id:"a01", difficulty:"easy", category:"arithmetic",
+    q:"Sara bought a bag of beads. She had 1,234 red beads and 2,157 blue beads, but lost 320 beads. How many beads were left in all?",
+    options:["3071","3171","3391","2971"], answer:0,
+    figure:"", fig:{}, words:"lost / left = minus ka kaam",
+    explainQ:"Sara ke paas red aur blue beads hain, phir woh 320 beats kho deti hai. Sab mila kar kitne bache?",
+    explainA:["Pehle jodo: 1,234 + 2,157 = 3,391","Phir lost huye nikalo: 3,391 − 320 = 3,071","Jawab A — 3071"] },
 
-  {
-    id: "b3",
-    difficulty: "easy",
-    category: "arithmetic",
-    q: "Hina made 240 stickers. She divided all the stickers equally among 6 friends. How many stickers did each friend get?",
-    options: ["24", "30", "40", "60"],
-    answer: 2,
-    figure: "",
-    fig: {},
-    words: "equally divided = baraabar taqseem = ÷",
-    explainQ: "240 sticker 6 doston mein baraabar baantne hain. Har dost ko kitne mile?",
-    explainA: ["Taiseem karne ka matlab ÷ hai: 240 ÷ 6", "240 ÷ 6 = 40", "Har dost ko 40 stickers — jawab C"]
-  },
+  { id:"a02", difficulty:"easy", category:"arithmetic",
+    q:"If you add 268 to me, I will become 600. Who am I?",
+    options:["332","342","268","432"], answer:0,
+    figure:"", fig:{}, words:"ulta karo — add ka ulta subtraction",
+    explainQ:"Ek number hai jis mein 268 jodo to 600 banay. Woh number kaunsa?",
+    explainA:["600 − 268 = 332","Check: 332 + 268 = 600 — sahi","Jawab A — 332"] },
 
-  {
-    id: "b5",
-    difficulty: "easy",
-    category: "time",
-    q: "Ayesha wakes up at 6:45 am. It takes her 40 minutes to get ready. What time is she ready?",
-    options: ["7:15 am", "7:25 am", "7:35 am", "7:45 am"],
-    answer: 1,
-    figure: "",
-    fig: {},
-    words: "after / takes = time aagay seen",
-    explainQ: "Ayesha 6:45 par uthti hai aur taiyaar hone mein 40 minute lagte hain. Woh kitne baje taiyaar hoti hai?",
-    explainA: ["6:45 mein 40 minute jodo", "45 + 40 = 85 minute = 1 ghanta 25 minute", "6:00 + 1:25 = 7:25 — jawab B"]
-  },
+  { id:"a03", difficulty:"easy", category:"arithmetic",
+    q:"Hina made 240 stickers. She divided all the stickers equally among 6 friends. How many stickers did each friend get?",
+    options:["24","30","40","60"], answer:2,
+    figure:"", fig:{}, words:"divided equally = barabar taqseem = ÷",
+    explainQ:"240 stickers 6 doston mein barabar baantni hain. Har dost ko kitni?",
+    explainA:["240 ÷ 6 = 40","Har dost ko 40 stickers","Jawab C — 40"] },
 
-  {
-    id: "b8",
-    difficulty: "easy",
-    category: "money",
-    q: "A 5-pack of pencils costs Rs. 75. What is the cost of one pencil?",
-    options: ["Rs. 12", "Rs. 15", "Rs. 20", "Rs. 25"],
-    answer: 1,
-    figure: "",
-    fig: {},
-    words: "cost of ONE = poore ki qeemat ÷ taadad",
-    explainQ: "5 pencils mil kar 75 rupay ke hain. Ek pencil ki qeemat kitni hai?",
-    explainA: ["Ek ki qeemat nikalne ke liye ÷ karo: 75 ÷ 5", "75 ÷ 5 = 15", "Ek pencil Rs. 15 — jawab B"]
-  },
+  { id:"a04", difficulty:"easy", category:"geometry",
+    q:"How many vertices does this shape have?",
+    options:["4","5","6","7"], answer:1,
+    figure:"shape", fig:{type:"pentagon"}, words:"vertices = kone (corners)",
+    explainQ:"Dikhaye gaye shape mein kitne kone (vertices) hain?",
+    explainA:["Pentagon ke 5 side aur 5 kone hote hain","Is shape mein 5 vertices hain","Jawab B — 5"] },
 
-  {
-    id: "b11",
-    difficulty: "medium",
-    category: "fraction",
-    q: "Which fraction is equal to 3/9?",
-    options: ["1/3", "3/6", "1/9", "2/3"],
-    answer: 0,
-    figure: "",
-    fig: {},
-    words: "equal fraction = chhota karke dekho (simplify)",
-    explainQ: "3/9 ke baraabar kaunsi fraction hai? Yani 3/9 ko chhota nambar jaisa likha jaye to kya banta hai?",
-    explainA: ["3/9 mein upar aur neeche dono 3 se divide karo", "3 ÷ 3 = 1 aur 9 ÷ 3 = 3", "3/9 = 1/3 — jawab A"]
-  },
+  { id:"a05", difficulty:"easy", category:"time",
+    q:"Ayesha wakes up at 6:45 am. It takes her 40 minutes to get ready. What time is she ready?",
+    options:["7:15 am","7:25 am","7:35 am","7:45 am"], answer:1,
+    figure:"", fig:{}, words:"takes / after = waqt aage barhao",
+    explainQ:"Ayesha 6:45 pe uthti hai, taiyaar hone mein 40 minute lagte hain. Kitne baje taiyaar?",
+    explainA:["6:45 + 40 minute","45 + 40 = 85 minute = 1 ghanta 25 minute","6:00 + 1:25 = 7:25 — jawab B"] },
 
-  {
-    id: "b14",
-    difficulty: "medium",
-    category: "calendar",
-    q: "Bilal has cricket practice every fifth day in May, starting with May 1. What date will be his last day of practice for the month?",
-    options: ["May 26", "May 29", "May 30", "May 31"],
-    answer: 3,
-    figure: "",
-    fig: {},
-    words: "every fifth day = 5, 5 jodo chaltay jao",
-    explainQ: "Bilal May mein har 5-wen din practice karta hai, 1 May se shuru. May ki aakhri practice kis date ko hogi?",
-    explainA: ["5, 5 karke aagay jao: 1, 6, 11, 16, 21, 26, 31", "May ke 31 din hote hain", "Aakhri practice 31 May — jawab D"]
-  },
+  { id:"a06", difficulty:"easy", category:"arithmetic",
+    q:"In this problem, what is 5?   45 ÷ 9 = 5",
+    options:["Divisor","Product","Quotient","Subtrahend"], answer:2,
+    figure:"", fig:{}, words:"quotient = taqseem ka jawab",
+    explainQ:"45 ÷ 9 = 5 mein 5 ko kya kehte hain — art term kya hai?",
+    explainA:["Taqseem (÷) ka jawab 'quotient' hota hai","45 = dividend, 9 = divisor, 5 = quotient","Jawab C — Quotient"] },
 
-  {
-    id: "b17",
-    difficulty: "medium",
-    category: "measurement",
-    q: "Nine kilometres two hundred forty metres is equal to how many metres?",
-    options: ["9024 metres", "9204 metres", "9240 metres", "9420 metres"],
-    answer: 2,
-    figure: "",
-    fig: {},
-    words: "km = 1000 metres; dono ko milao",
-    explainQ: "9 kilometre 240 metre ko poore metre mein likhna hai. Kitne metre bane?",
-    explainA: ["1 km = 1000 m, to 9 km = 9000 m", "9000 + 240 = 9240", "Jawab C — 9240 metres"]
-  },
+  { id:"a07", difficulty:"easy", category:"time",
+    q:"What time does the clock show?",
+    options:["10 to 3","10 past 3","10 to 2","2 past 10"], answer:0,
+    figure:"clock", fig:{h:2,m:50}, words:"'to' = kum aaya hua waqt",
+    explainQ:"Ghadi mein kaun sa waqt dikh raha hai?",
+    explainA:["Minute hand 10 par hai = 50 minute","10 minute aage 3 bajne wale hain = '10 to 3'","Yani 2:50 — jawab A"] },
 
-  {
-    id: "b19",
-    difficulty: "medium",
-    category: "logic",
-    q: "A farmer has hens and goats. There are 10 heads and 28 legs in total. How many goats does he have?",
-    options: ["3 goats", "4 goats", "5 goats", "6 goats"],
-    answer: 1,
-    figure: "",
-    fig: {},
-    words: "heads = sirf 1; goat ke 4 legs, hen ke 2",
-    explainQ: "Farm par hens aur goats hain. Kul 10 sar hain aur 28 tangen. Farm par kitni goats hain?",
-    explainA: ["Agar sab hens hotin to legs hote: 10 × 2 = 20", "Extra legs: 28 − 20 = 8", "Har goat ke 2 extra legs hain: 8 ÷ 2 = 4 goats", "Jawab B — 4 goats"]
-  },
+  { id:"a08", difficulty:"easy", category:"money",
+    q:"A 5-pack of pencils costs Rs. 75. What is the cost of one pencil?",
+    options:["Rs. 12","Rs. 15","Rs. 20","Rs. 25"], answer:1,
+    figure:"", fig:{}, words:"cost of ONE = poora ÷ taadad",
+    explainQ:"5 pencil 75 rupay ke hain. Ek pencil kitni ki?",
+    explainA:["75 ÷ 5 = 15","Ek pencil Rs. 15","Jawab B — Rs. 15"] },
 
-  {
-    id: "b22",
-    difficulty: "hard",
-    category: "time",
-    q: "A train leaves Station A at 2:20 pm and takes 1 hour 50 minutes to reach Station B. It waits 25 minutes, then travels 1 hour 15 minutes to Station C. What time does it arrive at Station C?",
-    options: ["5:30 pm", "5:40 pm", "5:50 pm", "6:00 pm"],
-    answer: 2,
-    figure: "",
-    fig: {},
-    words: "station se station — time ko ek saath jodo",
-    explainQ: "Train 2:20 pe chalti hai, B pe 1 ghanta 50 minute mein pahunchti hai, 25 minute rukti hai, phir C ka rasta 1 ghanta 15 minute hai. C pe kitne baje pahunchegi?",
-    explainA: ["2:20 + 1:50 = 4:10 (B pe aayi)", "4:10 + 25 minute wait = 4:35", "4:35 + 1:15 = 5:50 (C pe aayi)", "Jawab C — 5:50 pm"]
-  },
+  { id:"a09", difficulty:"medium", category:"arithmetic",
+    q:"The sum of two numbers is 9. The product of the two numbers is 20. What are the two numbers?",
+    options:["3 and 6","2 and 10","4 and 5","5 and 5"], answer:2,
+    figure:"", fig:{}, words:"sum = jama; product = zarb",
+    explainQ:"Do numbers ka jama 9 hai aur zarb 20. Woh numbers kaun se hain?",
+    explainA:["Test karo har option","4 + 5 = 9; 4 × 5 = 20 — dono sahi","Jawab C — 4 and 5"] },
 
-  {
-    id: "b24",
-    difficulty: "hard",
-    category: "time",
-    q: "A clock gains 5 minutes every hour. It was set correctly at 12:00 pm. What time will the faulty clock show when the actual time is 4:00 pm?",
-    options: ["4:15 pm", "4:20 pm", "4:25 pm", "3:40 pm"],
-    answer: 1,
-    figure: "",
-    fig: {},
-    words: "gains = zyada dikhata hai; growl = kam; tricky!",
-    explainQ: "Ek ghadi har ghante mein 5 minute aagay (zyada) ho jaati hai. 12:00 pe theek thi. Asli waqt 4:00 hai to yeh ghadi kya dikha rahi hai?",
-    explainA: ["Asli waqt 12 se 4 tak = 4 ghante", "Har ghante 5 minute zyada: 4 × 5 = 20 minute", "Ghadi 4:00 nahi, 4:20 dikhaayegi", "Jawab B — 4:20 pm"]
-  }
+  { id:"a10", difficulty:"medium", category:"patterns",
+    q:"What comes next in the pattern?",
+    options:["Triangle","Square","Pentagon","Hexagon"], answer:2,
+    figure:"pattern", fig:{kinds:["triangle","square","pentagon"]}, words:"pattern = andaz; sides barh rahe hain",
+    explainQ:"Shapes ka pattern dekh kar batayo aage kaunsa aaye ga?",
+    explainA:["Triangle = 3 sides, Square = 4 sides","Agla 5 sides wala = Pentagon","Jawab C — Pentagon"] },
+
+  { id:"a11", difficulty:"medium", category:"fraction",
+    q:"Which fraction is equal to 3/9?",
+    options:["1/3","3/6","1/9","2/3"], answer:0,
+    figure:"", fig:{}, words:"equal fraction = chhota karo (simplify)",
+    explainQ:"3/9 ke barabar kaunsi fraction hai?",
+    explainA:["3/9 ko 3 se divide karo","3÷3 = 1 aur 9÷3 = 3 → 1/3","Jawab A — 1/3"] },
+
+  { id:"a12", difficulty:"medium", category:"fraction",
+    q:"What fraction of the shape is shaded?",
+    options:["1/2","1/4","3/4","1/3"], answer:1,
+    figure:"grid", fig:{cols:2, rows:2, shaded:[0]}, words:"shaded = jo rang hua hai",
+    explainQ:"Shape ka kitna hissa shade hua hai?",
+    explainA:["4 barabar hissay hain","1 hissa shade hai","Shaded = 1/4 — jawab B"] },
+
+  { id:"a13", difficulty:"medium", category:"money",
+    q:"Price list: Notebook Rs. 45, Pen Rs. 30, Eraser Rs. 12. How much money is needed to buy 2 notebooks and 3 pens?",
+    options:["Rs. 165","Rs. 175","Rs. 180","Rs. 195"], answer:2,
+    figure:"", fig:{}, words:"2 notebooks + 3 pens — pehle har cheez ki qeemat",
+    explainQ:"2 notebook aur 3 pen khareedne mein kitne paise lagenge?",
+    explainA:["2 notebooks: 2 × 45 = 90","3 pens: 3 × 30 = 90","90 + 90 = 180 — jawab C"] },
+
+  { id:"a14", difficulty:"medium", category:"calendar",
+    q:"Bilal has cricket practice every fifth day in May, starting with May 1. What date will be his last day of practice for the month?",
+    options:["May 26","May 29","May 30","May 31"], answer:3,
+    figure:"", fig:{}, words:"every fifth day = 5, 5 jodo",
+    explainQ:"Bilal har 5-wen din practice karta hai, 1 May se. May ki aakhri practice?",
+    explainA:["5,5 karke: 1, 6, 11, 16, 21, 26, 31","May ke 31 din hote hain","Aakhri 31 May — jawab D"] },
+
+  { id:"a15", difficulty:"medium", category:"time",
+    q:"What will be the time after 15 minutes?",
+    options:["5 to 10","5 past 10","quarter past 10","10 past 5"], answer:1,
+    figure:"clock", fig:{h:9,m:50}, words:"after 15 minutes = 15 minute aage",
+    explainQ:"Ghadi ab 9:50 dikh rahi hai. 15 minute baad kya hoga?",
+    explainA:["9:50 + 15 minute = 10:05","10:05 ko kehte hain '5 past 10'","Jawab B — 5 past 10"] },
+
+  { id:"a16", difficulty:"medium", category:"data",
+    q:"The graph shows the number of books each child read this year. Who read the fewest books?",
+    options:["Ali","Sara","Bilal","Hina"], answer:3,
+    figure:"bars", fig:{labels:["Ali","Sara","Bilal","Hina"], values:[20,15,10,5]}, words:"fewest = sab se KAM",
+    explainQ:"Books ke graph mein kis ne sab se kam kitabein parhin?",
+    explainA:["Graph mein sab chhoti bar Hina ki hai","Hina sirf 5 kitabein parhi","Jawab D — Hina"] },
+
+  { id:"a17", difficulty:"medium", category:"measurement",
+    q:"Nine kilometres two hundred forty metres is equal to how many metres?",
+    options:["9024 metres","9204 metres","9240 metres","9420 metres"], answer:2,
+    figure:"", fig:{}, words:"1 km = 1000 metres",
+    explainQ:"9 kilometre 240 metre ko poore metre mein badlo. Kitne metre?",
+    explainA:["9 km = 9000 m","9000 + 240 = 9240","Jawab C — 9240 metres"] },
+
+  { id:"a18", difficulty:"hard", category:"arithmetic",
+    q:"Estimate the sum by rounding each number to the nearest thousand and then adding. 6,318 + 2,782. The sum is approximately ______.",
+    options:["8,000","9,000","10,000","7,000"], answer:1,
+    figure:"", fig:{}, words:"estimate = andaza lagao (round)",
+    explainQ:"Har number ko nearest thousand pe round karke jodo. Andaza kya aaye ga?",
+    explainA:["6,318 round ho kar 6,000","2,782 round ho kar 3,000","6,000 + 3,000 = 9,000 — jawab B"] },
+
+  { id:"a19", difficulty:"hard", category:"logic",
+    q:"A farmer has hens and goats. There are 10 heads and 28 legs in total. How many goats does he have?",
+    options:["3 goats","4 goats","5 goats","6 goats"], answer:1,
+    figure:"", fig:{}, words:"goat 4 legs, hen 2 legs",
+    explainQ:"Hens aur goats ka farm hai. 10 sar aur 28 tangen wakay kitni goats?",
+    explainA:["Agar sab hens: 10 × 2 = 20 legs","Extra: 28 − 20 = 8 legs","Har goat ke 2 extra: 8 ÷ 2 = 4 goats — jawab B"] },
+
+  { id:"a20", difficulty:"hard", category:"logic",
+    q:"Each letter is given a value by its place in the alphabet (A = 1, B = 2, C = 3, and so on). The value of each letter is multiplied by its position in the word \"MATH\". What is the total sum for the word \"MATH\"?",
+    options:["87","97","107","117"], answer:2,
+    figure:"", fig:{}, words:"letter value × position — dono zaroori",
+    explainQ:"MATH ke har letter ki value (A=1…) ko uski position se zarb karo phir sab jodo.",
+    explainA:["M = 13 × 1 = 13; A = 1 × 2 = 2; T = 20 × 3 = 60; H = 8 × 4 = 32","13 + 2 + 60 + 32 = 107","Jawab C — 107"] },
+
+  { id:"a21", difficulty:"hard", category:"measurement",
+    q:"What is the length of the line in centimetres?",
+    options:["7.5 cm","8 cm","8.5 cm","10.5 cm"], answer:2,
+    figure:"ruler", fig:{line:8.5}, words:"ruler par line kahan khatam hoti hai",
+    explainQ:"Ruler par jo line hai uski lambai kitni centimetre hai?",
+    explainA:["Line 0 se shuru hoti hai","Woh 8.5 cm par khatam hai","Jawab C — 8.5 cm"] },
+
+  { id:"a22", difficulty:"hard", category:"time",
+    q:"A train leaves Station A at 2:20 pm and takes 1 hour 50 minutes to reach Station B. It waits 25 minutes, then travels 1 hour 15 minutes to Station C. What time does it arrive at Station C?",
+    options:["5:30 pm","5:40 pm","5:50 pm","6:00 pm"], answer:2,
+    figure:"", fig:{}, words:"wait bhi jama karo",
+    explainQ:"Train A se 2:20 pe chalti hai, B tak 1:50 lagta hai, 25 minute wait, phir C tak 1:15. C pe kya waqt?",
+    explainA:["2:20 + 1:50 = 4:10 (B)","4:10 + 25 = 4:35 (wait)","4:35 + 1:15 = 5:50 — jawab C"] },
+
+  { id:"a23", difficulty:"hard", category:"logic",
+    q:"In a tournament, 32 players compete in single-elimination rounds (losing means you're out). How many games are played to find a winner?",
+    options:["16 games","30 games","31 games","32 games"], answer:2,
+    figure:"", fig:{}, words:"single-elimination = har game mein ek out",
+    explainQ:"32 khiladi single-elimination mein hain. Winner nikalne ke liye kitni games?",
+    explainA:["Har game mein ek player out hota hai","1 winner ke liye 31 players out hone zaroori","31 games — jawab C"] },
+
+  { id:"a24", difficulty:"hard", category:"time",
+    q:"A clock gains 5 minutes every hour. It was set correctly at 12:00 pm. What time will the faulty clock show when the actual time is 4:00 pm?",
+    options:["4:15 pm","4:20 pm","4:25 pm","3:40 pm"], answer:1,
+    figure:"", fig:{}, words:"gains = zyada dikhata hai",
+    explainQ:"Ghadi har ghante 5 minute aage ho jaati hai. 4 ghante baad kya dikhayegi?",
+    explainA:["4 ghante × 5 minute = 20 minute zyada","Asli waqt 4:00","Ghadi 4:20 — jawab B"] },
+
+  { id:"a25", difficulty:"hard", category:"geometry",
+    q:"How many more circles are there than triangles in the figure shown below?",
+    options:["1","2","3","4"], answer:2,
+    figure:"shapes", fig:{kind:"c-t", c:8, t:5}, words:"how many MORE = farq nikalo",
+    explainQ:"Figure mein circles zyada hain ya triangles? Kitne zyada?",
+    explainA:["8 circles, 5 triangles","8 − 5 = 3 more circles","Jawab C — 3"] },
+
+  // ============ PRACTICE SET B (v2) — 25 ============
+
+  { id:"b01", difficulty:"easy", category:"arithmetic",
+    q:"Adeel collected 1,562 shells and 2,438 stones, but gave away 250 items. How many items were left in all?",
+    options:["3,650","3,750","4,000","3,850"], answer:1,
+    figure:"", fig:{}, words:"gave away = chala gaya, minus",
+    explainQ:"Adeel ke paas shells aur stones hain, phir woh 250 cheezein de deta hai. Kitni bachi?",
+    explainA:["1,562 + 2,438 = 4,000","4,000 − 250 = 3,750","Jawab B — 3,750"] },
+
+  { id:"b02", difficulty:"easy", category:"arithmetic",
+    q:"Select the correct statement.",
+    options:["25 x 14 = 14 x 25","36 - 12 = 12 - 36","40 + 15 = 60 - 15","18 x 0 = 18"], answer:0,
+    figure:"", fig:{}, words:"zarb order badal sakte hain — plus/minus nahi",
+    explainQ:"Kaunsi baat (equation) sahih hai?",
+    explainA:["25 × 14 = 350 aur 14 × 25 = 350 — dono barabar","Zarb mein order se koi farq nahi hota","Jawab A — 25 x 14 = 14 x 25"] },
+
+  { id:"b03", difficulty:"easy", category:"arithmetic",
+    q:"Umar has 450 marbles. He divided all the marbles equally among 9 friends. How many marbles did each friend get?",
+    options:["40","45","50","55"], answer:2,
+    figure:"", fig:{}, words:"equally = barabar ÷",
+    explainQ:"450 marbles 9 doston mein barabar baantni hain. Har ko kitne?",
+    explainA:["450 ÷ 9 = 50","Har dost ko 50 marbles","Jawab C — 50"] },
+
+  { id:"b04", difficulty:"easy", category:"geometry",
+    q:"How many vertices does this shape have?",
+    options:["5","6","7","8"], answer:1,
+    figure:"shape", fig:{type:"hexagon"}, words:"vertices = kone",
+    explainQ:"Dikhaye shape (hexagon) mein kitne kone hain?",
+    explainA:["Hexagon ke 6 sides hote hain","6 sides = 6 kone (vertices)","Jawab B — 6"] },
+
+  { id:"b05", difficulty:"easy", category:"time",
+    q:"Mahnoor started her puzzle at quarter to nine in the morning. She finished at twenty past twelve in the afternoon. How long did it take her?",
+    options:["3 hours 25 minutes","3 hours 35 minutes","2 hours 35 minutes","3 hours 45 minutes"], answer:1,
+    figure:"", fig:{}, words:"quarter to nine = 8:45; twenty past twelve = 12:20",
+    explainQ:"Mahnoor ne 8:45 pe puzzle shuru kiya aur 12:20 pe khatam. Kitna waqt laga?",
+    explainA:["8:45 se 12:20 tak poore ghante: 8:45→12:45 = 4 ghante, lekin 12:20 pe khatam","4 ghante − 25 minute = 3 ghante 35 minute","Jawab B — 3h 35m"] },
+
+  { id:"b06", difficulty:"easy", category:"arithmetic",
+    q:"In this problem, what is 12?   34 - 12 = 22",
+    options:["Minuend","Subtrahend","Difference","Quotient"], answer:1,
+    figure:"", fig:{}, words:"subtrahend = jo ghataate hain",
+    explainQ:"34 − 12 = 22 mein 12 ko kya kehte hain?",
+    explainA:["34 = minuend (bara number)","12 = jo ghataaya ja raha hai = subtrahend","22 = difference","Jawab B — Subtrahend"] },
+
+  { id:"b07", difficulty:"medium", category:"arithmetic",
+    q:"The difference of two numbers is 2. The product of the two numbers is 48. What are the two numbers?",
+    options:["4 and 12","6 and 8","2 and 24","8 and 10"], answer:1,
+    figure:"", fig:{}, words:"difference = farq; product = zarb",
+    explainQ:"Do numbers ka farq 2 hai aur zarb 48. Numbers kaun se?",
+    explainA:["Test options: 8 − 6 = 2 ✓","8 × 6 = 48 ✓","Jawab B — 6 and 8"] },
+
+  { id:"b08", difficulty:"medium", category:"fraction",
+    q:"Which fraction of the shape is shaded?",
+    options:["1/2","5/8","3/4","7/8"], answer:1,
+    figure:"grid", fig:{cols:4, rows:2, shaded:[0,1,2,3,4]}, words:"shaded = rang hua hissa",
+    explainQ:"8 barabar hisson mein se kitne shade hain?",
+    explainA:["8 hissay hain","5 hissay shade hain","Shaded = 5/8 — jawab C"] },
+
+  { id:"b09", difficulty:"medium", category:"geometry",
+    q:"The radius of a circle is 7 inches. What is its diameter?",
+    options:["3.5 inches","7 inches","14 inches","21 inches"], answer:2,
+    figure:"", fig:{}, words:"diameter = radius ka double",
+    explainQ:"Circle ka radius 7 inch hai. Diameter (chaudai) kitni hai?",
+    explainA:["Diameter = 2 × radius","2 × 7 = 14 inches","Jawab C — 14 inches"] },
+
+  { id:"b10", difficulty:"medium", category:"patterns",
+    q:"What comes next in the pattern?  80, 40, 20, 10, ___",
+    options:["8","5","4","2"], answer:1,
+    figure:"", fig:{}, words:"pattern = aadha hota ja raha hai",
+    explainQ:"Numbers aadhe hote aa rahe hain. Age kya?",
+    explainA:["80 → 40 → 20 → 10 = har baar ÷2","10 ÷ 2 = 5","Jawab B — 5"] },
+
+  { id:"b11", difficulty:"medium", category:"arithmetic",
+    q:"Kiran needs 96 juice boxes for a school party. If there are 8 juice boxes in each pack, how many packs should Kiran buy?",
+    options:["10 packs","11 packs","12 packs","13 packs"], answer:2,
+    figure:"", fig:{}, words:"each pack = har pack mein",
+    explainQ:"96 juice boxes chahiye. Har pack mein 8 hain. Kitne pack?",
+    explainA:["96 ÷ 8 = 12","12 packs mein 96 boxes","Jawab C — 12 packs"] },
+
+  { id:"b12", difficulty:"medium", category:"data",
+    q:"Mrs. Alina's class kept track of pages read. How many pages did Fatima read?",
+    options:["500","550","600","650"], answer:2,
+    figure:"picto", fig:{names:["Ahmad","Fatima","Arfa","Amna"], per:50, counts:[7,12,8,10]}, words:"har circle = 50 pages",
+    explainQ:"Pictograph mein har circle 50 pages hain. Fatima ne kitni pages parhin?",
+    explainA:["Fatima ke 12 circles hain","12 × 50 = 600 pages","Jawab C — 600"] },
+
+  { id:"b13", difficulty:"medium", category:"measurement",
+    q:"Two toy cars race for 10 minutes. The green car moves 8 metres/minute and the blue car moves 5 metres/minute. How much farther does the green car go than the blue car?",
+    options:["20 m","25 m","30 m","35 m"], answer:2,
+    figure:"", fig:{}, words:"farther = kitna zyada → minus",
+    explainQ:"Green car aurat zyada door jaati hai blue se?",
+    explainA:["Green: 8 × 10 = 80 m","Blue: 5 × 10 = 50 m","80 − 50 = 30 m — jawab C"] },
+
+  { id:"b14", difficulty:"medium", category:"arithmetic",
+    q:"There were 150 chairs in a hall. 60 were taken out, and then 4 new rows of 10 chairs were added. How many chairs are there now?",
+    options:["120 chairs","130 chairs","140 chairs","150 chairs"], answer:1,
+    figure:"", fig:{}, words:"taken out = minus; added = plus",
+    explainQ:"150 kurnsi tha, 60 nikali gayi phir 4×10 nayi aain. Ab kitni?",
+    explainA:["150 − 60 = 90","4 × 10 = 40 nayi","90 + 40 = 130 — jawab B"] },
+
+  { id:"b15", difficulty:"medium", category:"logic",
+    q:"Hassan can wear one of 4 shirts and one of 2 trousers. Assuming all the clothes go together, how many different combinations can Hassan pick?",
+    options:["6","8","10","12"], answer:1,
+    figure:"", fig:{}, words:"combinations = zarb (multiply)",
+    explainQ:"Hassan ke paas 4 shirts aur 2 trousers hain. Kitne alag joray bana sakta?",
+    explainA:["Har shirt ke saath 2 trousers","4 × 2 = 8 combinations","Jawab B — 8"] },
+
+  { id:"b16", difficulty:"medium", category:"time",
+    q:"What time does the clock show?",
+    options:["25 to 5","25 past 4","5 to 4","quarter to 5"], answer:0,
+    figure:"clock", fig:{h:4,m:35}, words:"'to' = kum (aage waqt)",
+    explainQ:"Ghadi pe kaun sa waqt hai?",
+    explainA:["Minute hand 7 par = 35 minute","4:35 se 5:00 mein 25 minute baqi","'25 to 5' yani 4:35 — jawab A"] },
+
+  { id:"b17", difficulty:"hard", category:"money",
+    q:"Danish went to a bookshop and bought 3 storybooks costing Rs. 110, Rs. 75 and Rs. 65. He gave Rs. 300 to the shopkeeper. How much money did Danish get back?",
+    options:["Rs. 40","Rs. 50","Rs. 60","Rs. 70"], answer:1,
+    figure:"", fig:{}, words:"money back = change = bachaa hua paisa",
+    explainQ:"3 kitabein kharideen, 300 diye. Ktina paisa wapis mila?",
+    explainA:["110 + 75 + 65 = 250","300 − 250 = 50","Jawab B — Rs. 50"] },
+
+  { id:"b18", difficulty:"hard", category:"money",
+    q:"Sana's gross income last month was Rs. 5,250. Deductions of Rs. 730 and Rs. 120 were taken out. What was Sana's net income for the month?",
+    options:["Rs. 4,300","Rs. 4,400","Rs. 4,500","Rs. 4,520"], answer:1,
+    figure:"", fig:{}, words:"deductions = katta (minus)",
+    explainQ:"5,250 mein se do deduction katne hain. Net kitna bacha?",
+    explainA:["730 + 120 = 850","5,250 − 850 = 4,400","Jawab B — Rs. 4,400"] },
+
+  { id:"b19", difficulty:"hard", category:"logic",
+    q:"A farmer has hens and rabbits. There are 40 heads and 100 legs in total. How many rabbits does he have?",
+    options:["8 rabbits","10 rabbits","12 rabbits","15 rabbits"], answer:1,
+    figure:"", fig:{}, words:"rabbit 4 legs, hen 2 legs",
+    explainQ:"40 sar aur 100 tangen. Kitne rabbits hain?",
+    explainA:["Agar sab hens: 40 × 2 = 80 legs","Extra: 100 − 80 = 20 legs","Har rabbit +2: 20 ÷ 2 = 10 rabbits — jawab B"] },
+
+  { id:"b20", difficulty:"hard", category:"data",
+    q:"Mrs. Anderson graphs her students' favourite colours. In art class each student paints with their favourite colour, and all paint bottles start with the same amount. Which two colours of paint are likely to run out first?",
+    options:["red and green","red and orange","orange and blue","yellow and purple"], answer:2,
+    figure:"bars", fig:{labels:["red","orange","yellow","green","blue","purple"], values:[6,11,4,5,10,3]}, words:"run out first = sab zyada use hui",
+    explainQ:"Favourite colours ke graph mein kaunse do colour zyada baratte hain (sab se pehle khatam honge)?",
+    explainA:["Sab se baray do bars dekho","orange (11) aur blue (10) sab se bare hain","Jawab C — orange and blue"] },
+
+  { id:"b21", difficulty:"hard", category:"patterns",
+    q:"While organising his DVDs, Waqar put 2 DVDs on the first rack, 6 on the second, 18 on the third, and 54 on the fourth. If this pattern continues, how many DVDs will Waqar put on the fifth rack?",
+    options:["108","135","162","216"], answer:2,
+    figure:"", fig:{}, words:"pattern = har baar ×3",
+    explainQ:"DVDs har rack mein 3 guna ho rahi hain. 5-wen rack par kitni?",
+    explainA:["2 → 6 → 18 → 54 = har baar ×3","54 × 3 = 162","Jawab C — 162"] },
+
+  { id:"b22", difficulty:"hard", category:"time",
+    q:"A train leaves Station A at 4:05 pm and takes 2 hours 35 minutes to reach Station B. It waits 20 minutes, then travels 1 hour 10 minutes to Station C. What time does it arrive at Station C?",
+    options:["7:50 pm","8:00 pm","8:10 pm","8:20 pm"], answer:2,
+    figure:"", fig:{}, words:"times ko jodo",
+    explainQ:"Train A se 4:05 pe chalti hai. B tak 2:35, wait 20 min, C tak 1:10. C pe kaun sa waqt?",
+    explainA:["4:05 + 2:35 = 6:40 (B)","6:40 + 20 = 7:00 (wait)","7:00 + 1:10 = 8:10 — jawab C"] },
+
+  { id:"b23", difficulty:"hard", category:"time",
+    q:"A clock loses 4 minutes every hour. It was set correctly at 12:00 pm. What time will the faulty clock show when the actual time is 5:00 pm?",
+    options:["4:36 pm","4:40 pm","4:45 pm","5:20 pm"], answer:1,
+    figure:"", fig:{}, words:"loses = kam dikhata hai",
+    explainQ:"Ghadi har ghante 4 minute peeche ho jaati hai. Asli waqt 5:00 hoga to ghadi kya dikhayegi?",
+    explainA:["5 ghante × 4 = 20 minute peeche","5:00 − 20 = 4:40","Jawab B — 4:40"] },
+
+  { id:"b24", difficulty:"hard", category:"measurement",
+    q:"A runner completes a 30 km race in 2 hours. She runs the first half in 1 hour 15 minutes. How fast (in km/h) must she run the second half to finish in her total time?",
+    options:["16 km/h","18 km/h","20 km/h","24 km/h"], answer:2,
+    figure:"", fig:{}, words:"second half = baqi aadha rasta",
+    explainQ:"30 km race 2 ghante mein. Pehle 15 km 1 ghanta 15 minute mein. Baqi 15 km kitna tez bhage?",
+    explainA:["Total 120 min − 75 min = 45 minute baqi","15 km in 45 min = 15 ÷ 0.75 = 20 km/hr","Jawab C — 20 km/h"] },
+
+  { id:"b25", difficulty:"hard", category:"geometry",
+    q:"What is the measurement of this angle?",
+    options:["90\u00b0","180\u00b0","270\u00b0","360\u00b0"], answer:0,
+    figure:"angle", fig:{deg:90}, words:"right angle = 90 degree",
+    explainQ:"Dikhaya gaya angle kitne degree ka hai?",
+    explainA:["Yeh ek right angle hai","Right angle = 90\u00b0 hota hai","Jawab A — 90\u00b0"] },
+
+  // ============ PRACTICE SET C (v2) — 25 ============
+
+  { id:"c01", difficulty:"easy", category:"arithmetic",
+    q:"Rida had 2,345 green buttons and 1,876 gold buttons, but lost 400 buttons. How many buttons were left in all?",
+    options:["3,721","3,821","4,221","3,921"], answer:1,
+    figure:"", fig:{}, words:"left in all = sab mila kar baqi",
+    explainQ:"Rida ke paas do tarah ke buttons hain, phir 400 khu gaye. Kitne bache?",
+    explainA:["2,345 + 1,876 = 4,221","4,221 − 400 = 3,821","Jawab B — 3,821"] },
+
+  { id:"c02", difficulty:"easy", category:"arithmetic",
+    q:"If you add 275 to me, I will become 900. Who am I?",
+    options:["615","625","635","725"], answer:1,
+    figure:"", fig:{}, words:"add karke 900 — ulti sochna (reverse)",
+    explainQ:"275 jor do to 900 ho jata hai. Mera number kya hai?",
+    explainA:["Reverse: 900 − 275 = 625","625 + 275 = 900 ✓","Jawab B — 625"] },
+
+  { id:"c03", difficulty:"easy", category:"arithmetic",
+    q:"Avery made 360 key chains. She divided all of them equally among 4 friends. How many key chains did each friend get?",
+    options:["80","85","90","95"], answer:2,
+    figure:"", fig:{}, words:"equally = barabar baantna ÷",
+    explainQ:"360 key chains 4 doston mein barabar batni hain. Har ko kitni?",
+    explainA:["360 ÷ 4 = 90","Har friend ko 90 key chains","Jawab C — 90"] },
+
+  { id:"c04", difficulty:"easy", category:"time",
+    q:"Aisha wakes up at 7:20 am. It takes her 55 minutes to get ready. What time is she ready?",
+    options:["8:05 am","8:10 am","8:15 am","8:25 am"], answer:2,
+    figure:"", fig:{}, words:"get ready = tayar hone ke liye waqt",
+    explainQ:"Aisha 7:20 pe uthti hai, 55 minute mein tayar hoti hai. Kitne baje tayar?",
+    explainA:["7:20 + 55 min = 8:15","Jawab C — 8:15 am"] },
+
+  { id:"c05", difficulty:"easy", category:"measurement",
+    q:"Which of these would be measured in litres?",
+    options:["The weight of a school bag","The milk in a jug","The length of a rope","The height of a door"], answer:1,
+    figure:"", fig:{}, words:"litres = liquid/paneer ki napaai",
+    explainQ:"In cheezon mein se kis ko litres mein napaa jaata hai?",
+    explainA:["Litres mein liquid (pani, doodh) napaa jata hai","Doodh (milk) in a jug — jawab B"] },
+
+  { id:"c06", difficulty:"easy", category:"arithmetic",
+    q:"In this problem, what is 42?   6 x 7 = 42",
+    options:["Quotient","Sum","Product","Factor"], answer:2,
+    figure:"", fig:{}, words:"product = zarb ka jawab",
+    explainQ:"6 × 7 = 42 mein 42 ko kya kehte hain?",
+    explainA:["Zarb (multiplication) ka jawab Product hota hai","6 aur 7 factors hain","42 = Product — jawab C"] },
+
+  { id:"c07", difficulty:"medium", category:"geometry",
+    q:"Which word describes this shape?",
+    options:["Square","Parallelogram","Triangle","Rectangle"], answer:1,
+    figure:"shape", fig:{type:"parallelogram"}, words:"parallelogram = teedhi dono jorre",
+    explainQ:"Yeh shape kya kehlata hai?",
+    explainA:["Square/rectangle ke 4 numishan (90\u00b0) kone hote hain","Parallelogram ki ek taraf teedhi hoti hai","Jawab B — Parallelogram"] },
+
+  { id:"c08", difficulty:"medium", category:"arithmetic",
+    q:"I thought of a number. I doubled it and added 5. The answer was 41. Which number did I think of?",
+    options:["16","18","20","23"], answer:1,
+    figure:"", fig:{}, words:"reverse: pehle minus 5, phir aadha",
+    explainQ:"Number double karke 5 jora to 41 mila. Pahle number kya tha?",
+    explainA:["41 − 5 = 36","36 ÷ 2 = 18","Jawab B — 18"] },
+
+  { id:"c09", difficulty:"medium", category:"logic",
+    q:"Seema is 8. Krisha is 3 years older than Seema and 4 years younger than Geeta. How old is Geeta?",
+    options:["11","13","15","16"], answer:2,
+    figure:"", fig:{}, words:"chain: Seema → Krisha → Geeta",
+    explainQ:"Seema 8. Krisha us se 3 baray. Geeta Krisha se 4 baray. Geeta kitni?",
+    explainA:["Krisha = 8 + 3 = 11","Geeta = 11 + 4 = 15","Jawab C — 15"] },
+
+  { id:"c10", difficulty:"medium", category:"patterns",
+    q:"Which number correctly completes the pattern?   Column A: 4, 6, 9, 12    Column B: 12, 18, 27, ?",
+    options:["30","33","36","39"], answer:2,
+    figure:"", fig:{}, words:"Column B = Column A × 3",
+    explainQ:"Pehle column mein 4,6,9,12 hain. Doosre mein 3 guna: 12,18,27, ???",
+    explainA:["4×3=12, 6×3=18, 9×3=27","12 × 3 = 36","Jawab C — 36"] },
+
+  { id:"c11", difficulty:"medium", category:"arithmetic",
+    q:"A mystery number has a 3 in the one's place, a 5 in the ten's place and an 8 in the hundred's place. What is the number?",
+    options:["358","385","835","853"], answer:3,
+    figure:"", fig:{}, words:"ones, tens, hundreds — seedha likho",
+    explainQ:"Ek number mein 3 (ones), 5 (tens), 8 (hundreds). Number kya hai?",
+    explainA:["Hundreds se likho: 8, phir 5, phir 3","853","Jawab D — 853"] },
+
+  { id:"c12", difficulty:"medium", category:"time",
+    q:"How many hours does the hour hand take to complete one round of the clock?",
+    options:["6 hours","12 hours","24 hours","60 hours"], answer:1,
+    figure:"", fig:{}, words:"hour hand = choti sui ka ek chakkar",
+    explainQ:"Choti sui (hour hand) ko clock ka poora chakkar lagane mein kitne ghante lagte hain?",
+    explainA:["Hour hand 12 ghante mein poora ghoomta hai","12 baje se 12 baje tak = 12 ghante","Jawab B — 12 hours"] },
+
+  { id:"c13", difficulty:"medium", category:"arithmetic",
+    q:"The fact family is: 5 x 6 = 30; 30 ÷ 6 = 5. Which of these equations also belongs to this fact family?",
+    options:["30 ÷ 5 = 6","30 - 6 = 24","5 + 6 = 11","30 x 5 = 150"], answer:0,
+    figure:"", fig:{}, words:"fact family = ek ghar ka zarb aur bhag",
+    explainQ:"5×6=30 aur 30÷6=5 hain. Aur kaunsa unse juda hai?",
+    explainA:["Same 3 numbers: 5, 6, 30","30 ÷ 5 = 6 bhi usi family ka hai","Jawab A — 30 ÷ 5 = 6"] },
+
+  { id:"c14", difficulty:"medium", category:"measurement",
+    q:"Amna has a bucket of water, as shown below. She wants to pour all of the water equally into 3 bowls. How many litres should she pour into each bowl?",
+    options:["4","5","6","3"], answer:0,
+    figure:"bucket", fig:{max:15, level:12}, words:"equally = barabar, pani kitna hai pehle",
+    explainQ:"Bucket mein 12 litre pani hai. 3 bowlon mein barabar dala jaye. Har bowl mein kitne litre?",
+    explainA:["Bucket mein pani 12 L hai","12 ÷ 3 = 4 L har bowl mein","Jawab A — 4"] },
+
+  { id:"c15", difficulty:"medium", category:"calendar",
+    q:"Faisal has swimming class every sixth day in June, starting with June 2. On which date will he have his last class of the month?",
+    options:["June 20","June 24","June 26","June 30"], answer:2,
+    figure:"", fig:{}, words:"every 6th day = har 6 din mein",
+    explainQ:"Faisal June mein har 6-wen din tairne jata hai, shuru June 2 se. Aakhri class kab?",
+    explainA:["Dates: 2, 8, 14, 20, 26","26 ke baad 32 June nahi hota","Jawab C — June 26"] },
+
+  { id:"c16", difficulty:"medium", category:"data",
+    q:"The graph shows favourite fruits in a class. In art class each student paints their favourite fruit, and all paint bottles start with the same amount. Which two colours of paint are likely to run out first?",
+    options:["Apple and Banana","Mango and Apple","Banana and Grapes","Mango and Grapes"], answer:1,
+    figure:"bars", fig:{labels:["Apple","Mango","Banana","Grapes"], values:[12,11,5,6]}, words:"run out first = sab se bara bar",
+    explainQ:"Fruits ke graph mein kaunse do sab zyada pasand hain (paint khatam ho jayega)?",
+    explainA:["Apple (12) aur Mango (11) sab se bare bars hain","In dono ka paint pehle khatam hoga","Jawab B — Mango and Apple"] },
+
+  { id:"c17", difficulty:"medium", category:"logic",
+    q:"Cody arrives at the park at 10:00 am to meet a friend at 10:30 am. Which question can be answered using this information?",
+    options:["How far is the park from Cody's house?","How long could Cody have to wait for his friend?","How long does Cody stay at the park?","When will Cody go home?"], answer:1,
+    figure:"", fig:{}, words:"wait = intezar; 10:30 − 10:00",
+    explainQ:"Cody 10:00 pe pahunchta hai, dost 10:30 pe aayega. Kis sawal ka jawab mil sakta hai?",
+    explainA:["Waittime nikaal sakte hain: 10:30 − 10:00 = 30 min","Dusre sawal (doori, rukna, ghar jaana) ka pata nahi","Jawab B — How long could Cody wait"] },
+
+  { id:"c18", difficulty:"hard", category:"arithmetic",
+    q:"John wants a carpenter to build a bookcase. Each shelf holds 12 books. How many shelves does he need if he has 150 books?",
+    options:["12","13","14","15"], answer:1,
+    figure:"", fig:{}, words:"each shelf = har shelf mein 12 books",
+    explainQ:"150 books hain, har shelf mein 12. Kitne shelves chahiye?",
+    explainA:["150 ÷ 12 = 12 with baqi 6","12 shelves mein 144 beth jate hain, 6 reh jaate","Toh 13 shelves chahiye — jawab B"] },
+
+  { id:"c19", difficulty:"hard", category:"logic",
+    q:"On a farm there were some hens and sheep. Altogether there were 9 heads and 26 feet. How many hens were there?",
+    options:["3","4","5","6"], answer:2,
+    figure:"", fig:{}, words:"hen 2 feet, sheep 4 feet",
+    explainQ:"9 sar aur 26 paon. Kitni hens (murgiyan) hain?",
+    explainA:["Agar sab hens: 9 × 2 = 18 feet","Extra: 26 − 18 = 8 feet","Har sheep +2: 8 ÷ 2 = 4 sheep → hens = 9 − 4 = 5 — jawab C"] },
+
+  { id:"c20", difficulty:"hard", category:"logic",
+    q:"Three baskets hold 11 eggs in total. The Brown basket has two more eggs than the Red basket. The Red basket has three eggs fewer than the Pink basket. How many eggs are in each basket?",
+    options:["Red 2, Brown 4, Pink 5","Red 3, Brown 5, Pink 3","Red 1, Brown 3, Pink 7","Red 2, Brown 5, Pink 4"], answer:0,
+    figure:"", fig:{}, words:"try karo har option — total 11 bhi",
+    explainQ:"Teen baskets mein kul 11 ande. Brown = Red + 2, Red = Pink − 3. Kaunsa sahi hai?",
+    explainA:["Red 2 + Brown 4 + Pink 5 = 11 ✓","Brown = Red+2 = 4 ✓; Red = Pink−3 = 2 ✓","Jawab A — Red 2, Brown 4, Pink 5"] },
+
+  { id:"c21", difficulty:"hard", category:"arithmetic",
+    q:"Sughra reads 80 minutes each day for 7 days. Samra reads 50 minutes each day for 9 days. What is the difference, in minutes, between their total reading times?",
+    options:["90","100","110","120"], answer:2,
+    figure:"", fig:{}, words:"difference = farq; pehle dono ke total",
+    explainQ:"Sughra 7 din 80 min, Samra 9 din 50 min parhti hai. Total mein kitna farq?",
+    explainA:["Sughra: 80 × 7 = 560 min","Samra: 50 × 9 = 450 min","560 − 450 = 110 — jawab C"] },
+
+  { id:"c22", difficulty:"hard", category:"measurement",
+    q:"Amanda wants to cover the top of her doll's table with coloured paper. The top of the table is shown below. How many square centimetres of paper does Amanda need if each square equals 1 square centimetre?",
+    options:["13","26","35","40"], answer:3,
+    figure:"grid", fig:{cols:8, rows:5, shaded:"all"}, words:"har square = 1 cm² — gine square",
+    explainQ:"Table ka upar 8 lado aur 5 lado squares mein hai. Total kitne square centimetres?",
+    explainA:["Square gine: 5 rows × 8 = 40","Har square 1 cm²","Jawab D — 40"] },
+
+  { id:"c23", difficulty:"hard", category:"measurement",
+    q:"A balance shows that 2 cans have the same mass as 8 identical boxes. Each can has a mass of 60 grams. What is the mass, in grams, of each box?",
+    options:["12 grams","15 grams","20 grams","30 grams"], answer:1,
+    figure:"", fig:{}, words:"balance = dono tarf barabar mass",
+    explainQ:"2 cans = 8 boxes hai. Can 60g. Har box kitne gram?",
+    explainA:["2 × 60 = 120 g kul","120 ÷ 8 = 15 g har box","Jawab B — 15 grams"] },
+
+  { id:"c24", difficulty:"hard", category:"time",
+    q:"The clock shows the time now. What will be the time after 30 minutes?",
+    options:["quarter to 8","quarter past 8","half past 8","quarter past 7"], answer:1,
+    figure:"clock", fig:{h:7,m:45}, words:"after 30 min = 30 minute aage",
+    explainQ:"Ghadi ab 7:45 dikhati hai. 30 minute baad kaun sa waqt?",
+    explainA:["7:45 + 30 min = 8:15","8:15 = 'quarter past 8'","Jawab B — quarter past 8"] },
+
+  { id:"c25", difficulty:"hard", category:"geometry",
+    q:"How many triangles are there in the following figure?",
+    options:["3","4","5","6"], answer:2,
+    figure:"triangles5", fig:{}, words:"triangles gino — chote aur bare",
+    explainQ:"Figure mein kitne triangles hain?",
+    explainA:["Bade (bade) 3 triangles","Upar chhotay 2 triangles","Kul 5 — jawab C"] },
+
+  // ============ PRACTICE SET D (v2) — 25 ============
+
+  { id:"d01", difficulty:"easy", category:"arithmetic",
+    q:"Hamza counted 3,124 red balloons and 2,568 blue balloons, but 500 balloons burst. How many balloons were left in all?",
+    options:["5,092","5,192","5,292","5,692"], answer:1,
+    figure:"", fig:{}, words:"burst = phat gaye (minus)",
+    explainQ:"3,124 lal aur 2,568 neele balloons, 500 phat gaye. Kitne bache?",
+    explainA:["3,124 + 2,568 = 5,692","5,692 − 500 = 5,192","Jawab B — 5,192"] },
+
+  { id:"d02", difficulty:"easy", category:"arithmetic",
+    q:"Select the correct statement.",
+    options:["45 + 38 = 83 - 0","70 - 25 = 40 + 15","18 x 25 = 25 x 18","Both (a) and (c)"], answer:3,
+    figure:"", fig:{}, words:"dono check karo (a) aur (c)",
+    explainQ:"Kaunsi baatein sahi hain?",
+    explainA:["(a): 45+38 = 83 aur 83−0 = 83 ✓","(c): 18×25 = 450 aur 25×18 = 450 ✓","(b) galat hai → Jawab D — Both (a) and (c)"] },
+
+  { id:"d03", difficulty:"medium", category:"geometry",
+    q:"What kind of triangle is this?",
+    options:["acute","right","obtuse","None of the above"], answer:0,
+    figure:"shape", fig:{type:"triangle", angles:[38,64,78]}, words:"acute = sab kone 90 se chote",
+    explainQ:"Triangle ke kone 38\u00b0, 64\u00b0, 78\u00b0 hain. Kis tarah ka triangle?",
+    explainA:["Right = koi kona 90\u00b0; Obtuse = koi kona 90\u00b0 se bara","Yahan sab 90\u00b0 se chote hain","Acute triangle — jawab A"] },
+
+  { id:"d04", difficulty:"easy", category:"fraction",
+    q:"How much of the shape is shaded?",
+    options:["1/2","1/4","1/3","3/4"], answer:1,
+    figure:"grid", fig:{cols:2, rows:2, shaded:[0]}, words:"shaded = rang wala hissa",
+    explainQ:"4 hisson mein se kitna shade hai?",
+    explainA:["4 barabar hissay hain","1 hissa shade hai","Shaded = 1/4 — jawab B"] },
+
+  { id:"d05", difficulty:"medium", category:"time",
+    q:"Molly started her puzzle at five to ten in the morning. She finished at ten past one in the afternoon. How long did it take Molly?",
+    options:["2 hours 15 minutes","3 hours 5 minutes","3 hours 15 minutes","3 hours 25 minutes"], answer:2,
+    figure:"", fig:{}, words:"five to ten = 9:55; ten past one = 1:10 pm",
+    explainQ:"Molly 9:55 pe shuru aur 1:10 pe khatam kiya. Kitna waqt?",
+    explainA:["9:55 → 1:10 = 3 ghante 15 minute","Jawab C — 3h 15m"] },
+
+  { id:"d06", difficulty:"medium", category:"fraction",
+    q:"Which fraction is equal to 4/10?",
+    options:["1/5","2/5","4/5","2/10"], answer:1,
+    figure:"", fig:{}, words:"equal fraction = chota bana do (÷2)",
+    explainQ:"4/10 kis fraction ke barabar hai?",
+    explainA:["4/10 ko 2 se chota karo","4÷2 / 10÷2 = 2/5","Jawab B — 2/5"] },
+
+  { id:"d07", difficulty:"easy", category:"money",
+    q:"A 4-pack of candies costs Rs. 96. What is the cost of one candy?",
+    options:["Rs. 22","Rs. 23","Rs. 24","Rs. 26"], answer:2,
+    figure:"", fig:{}, words:"4-pack cost ÷ 4",
+    explainQ:"4 candies ki pack 96 rupees ki hai. Ek candy kitne ki?",
+    explainA:["96 ÷ 4 = 24","Jawab C — Rs. 24"] },
+
+  { id:"d08", difficulty:"medium", category:"money",
+    q:"Price list: Red Block Rs. 3.50, Blue Ball Rs. 2.25. How much money does Ali need to buy 2 red blocks and 4 blue balls?",
+    options:["Rs. 14.50","Rs. 15.00","Rs. 16.00","Rs. 17.50"], answer:2,
+    figure:"", fig:{}, words:"2 red + 4 blue — pehle zarb phir jor",
+    explainQ:"Ali ko 2 red blocks aur 4 blue balls ke liye kitna paisa chahiye?",
+    explainA:["Red: 2 × 3.50 = 7.00","Blue: 4 × 2.25 = 9.00","7 + 9 = 16.00 — jawab C"] },
+
+  { id:"d09", difficulty:"medium", category:"measurement",
+    q:"What is the length of the line in centimetres?",
+    options:["7.5 cm","8 cm","8.5 cm","9.5 cm"], answer:2,
+    figure:"ruler", fig:{line:8.5}, words:"line ki length bada do",
+    explainQ:"Ruler par line kitni lambi hai?",
+    explainA:["Line 8 se aage aadha jati hai","8.5 cm","Jawab C — 8.5 cm"] },
+
+  { id:"d10", difficulty:"medium", category:"measurement",
+    q:"Eight kilometres sixty metres is equal to how many metres?",
+    options:["8,006 metres","8,060 metres","8,600 metres","8,660 metres"], answer:1,
+    figure:"", fig:{}, words:"1 km = 1000 m",
+    explainQ:"8 km 60 m ko pure metres mein badlo.",
+    explainA:["8 km = 8,000 m","8,000 + 60 = 8,060 m","Jawab B — 8,060 metres"] },
+
+  { id:"d11", difficulty:"medium", category:"arithmetic",
+    q:"Ali walked 9.2 kilometres on Monday and 6.5 kilometres on Tuesday. How much farther did Ali walk on Monday than on Tuesday?",
+    options:["2.3 km","2.5 km","2.7 km","3.7 km"], answer:2,
+    figure:"", fig:{}, words:"farther = farq (minus)",
+    explainQ:"Monday 9.2 km, Tuesday 6.5 km chala. Kitna zyada?",
+    explainA:["9.2 − 6.5 = 2.7 km","Jawab C — 2.7 km"] },
+
+  { id:"d12", difficulty:"hard", category:"measurement",
+    q:"What is the area of the shaded region?",
+    options:["119 square metres","124 square metres","144 square metres","169 square metres"], answer:0,
+    figure:"gridcut", fig:{side:12, cut:5}, words:"area = bara square − kata square",
+    explainQ:"12m ka square (144) mein se 5m ka tukra katta hua hai (25). Shade hissa kitna?",
+    explainA:["Bara: 12 × 12 = 144","Kata: 5 × 5 = 25","144 − 25 = 119 — jawab A"] },
+
+  { id:"d13", difficulty:"medium", category:"patterns",
+    q:"Which time is missing?   7:00, 7:45, ?, 9:15, 10:00",
+    options:["8:15","8:30","8:45","9:00"], answer:1,
+    figure:"", fig:{}, words:"pattern = har baar 45 minute aage",
+    explainQ:"Har waqt 45 minute agay badh raha hai. Khali jagah kaun si?",
+    explainA:["7:45 + 45 min = 8:30","8:30 + 45 = 9:15 ✓","Jawab B — 8:30"] },
+
+  { id:"d14", difficulty:"medium", category:"logic",
+    q:"Train schedule Springtown to Danville — Departures: 9:30 am, 11:00 am, 2:15 pm. Arrivals: 10:45 am, 12:15 pm, 3:30 pm. Fizza wants to arrive at Danville by 12:15 pm. What is the latest train she should take?",
+    options:["9:30 am","11:00 am","2:15 pm","12:15 pm"], answer:1,
+    figure:"", fig:{}, words:"latest = sab se aakhri waqt tak",
+    explainQ:"Fizza ko 12:15 tak Danville pahunch na hai. Sab se aakhri kaun si train pakde?",
+    explainA:["11:00 am wali train 12:15 pe pahunchti hai","2:15 wali late hai","Jawab B — 11:00 am"] },
+
+  { id:"d15", difficulty:"medium", category:"calendar",
+    q:"Every seventh day in September, starting from September 3, Hamna goes for her piano lesson. On which date will Hamna have her second last piano lesson for the month?",
+    options:["September 10","September 17","September 24","September 30"], answer:1,
+    figure:"", fig:{}, words:"second last = aakhri se ek pehle",
+    explainQ:"Hamna har 7-wen din (3 se shuroo) piano sikhne jati hai. Aakhri se ek pehle wali lesson kab?",
+    explainA:["Dates: 3, 10, 17, 24 (31 Sept mein nahi hai)","Last = 24, second last = 17","Jawab B — September 17"] },
+
+  { id:"d16", difficulty:"hard", category:"time",
+    q:"Before art class, Fatima has a spelling test that lasts 45 minutes. Art class lasts 40 minutes and ends at 12:05 pm. What time does Fatima start the spelling test?",
+    options:["10:35 am","10:40 am","10:45 am","11:25 am"], answer:1,
+    figure:"", fig:{}, words:"peeche jao: art pehle, phir test",
+    explainQ:"Art 12:05 pe khatam ho jati hai (40 min). Test 45 min us se pehle. Test kab shuru?",
+    explainA:["Art shuru: 12:05 − 40 = 11:25","Test shuru: 11:25 − 45 = 10:40","Jawab B — 10:40 am"] },
+
+  { id:"d17", difficulty:"medium", category:"arithmetic",
+    q:"A petri dish contained 612 bacteria. The bacteria grew and now there are 941. The scientist split them into two dishes, with one dish having 500 bacteria. How many bacteria are in the other dish?",
+    options:["429","431","441","451"], answer:2,
+    figure:"", fig:{}, words:"611 pe dhyan nahi — abhi 941 hain",
+    explainQ:"Ab 941 bacteria hain. 500 ek dish mein. Doosri mein kitne?",
+    explainA:["941 − 500 = 441","Jawab C — 441"] },
+
+  { id:"d18", difficulty:"medium", category:"logic",
+    q:"I am an even number. I am greater than 52 but less than 58. I am also divisible by 4. What number am I?",
+    options:["52","54","56","58"], answer:2,
+    figure:"", fig:{}, words:"divisible by 4 = 4 se banta hai",
+    explainQ:"Jawabdo tell: 52 se bara, 58 se chota, even, aur 4 se bata hai. Kaunsa?",
+    explainA:["54 aur 56 bache hain","56 ÷ 4 = 14 ✓","Jawab C — 56"] },
+
+  { id:"d19", difficulty:"hard", category:"arithmetic",
+    q:"Last year 205,300 passengers landed on time and 396,820 passengers landed late. In all, about how many passengers landed? Choose the better estimate.",
+    options:["500,000","600,000","700,000","800,000"], answer:1,
+    figure:"", fig:{}, words:"estimate = andaaza — jod kar round",
+    explainQ:"205,300 + 396,820 ka andaaza kitna hoga?",
+    explainA:["205,300 ≈ 200,000","396,820 ≈ 400,000","≈ 600,000 — jawab B"] },
+
+  { id:"d20", difficulty:"hard", category:"arithmetic",
+    q:"Guess who am I? I am a 5-digit number. My unit's place is the sum of 2 and 4. My ten's place is the difference between 8 and 5. My hundred's place is twice my ten's place. My thousand's place is the same as my unit's place. My ten thousand's place is an even number greater than 6 and less than 9.",
+    options:["86,636","86,366","68,636","86,633"], answer:0,
+    figure:"", fig:{}, words:"places bandi karo: ten-thousands → thousands → ...",
+    explainQ:"5-digit number khud banao hints se. Kaunsa hai?",
+    explainA:["units = 6, tens = 3, hundreds = 6","thousands = 6, ten-thousands = 8","86,636 — jawab A"] },
+
+  { id:"d21", difficulty:"hard", category:"logic",
+    q:"Milo makes a security code: he finds the 4th word of the sentence \u201CThe quick brown fox jumps\u201D, gives each letter its alphabet value (A = 1, B = 2, and so on), and adds them all. What is Milo's code?",
+    options:["39","42","45","48"], answer:2,
+    figure:"", fig:{}, words:"4th word = 'fox' — alphabet position jodo",
+    explainQ:"Sentence ka 4-wan lafz 'fox' hai. Har letter ka number jodo.",
+    explainA:["f = 6, o = 15, x = 24","6 + 15 + 24 = 45","Jawab C — 45"] },
+
+  { id:"d22", difficulty:"medium", category:"data",
+    q:"The pictograph shows how many marbles each child has. How many marbles does Bilal have?",
+    options:["7","30","35","40"], answer:2,
+    figure:"picto", fig:{names:["Ali","Sara","Bilal"], per:5, counts:[10,8,7]}, words:"each circle = 5 marbles",
+    explainQ:"Pictograph mein har circle 5 marbles. Bilal ke 7 circles. Kitne marbles?",
+    explainA:["7 × 5 = 35 marbles","Jawab C — 35"] },
+
+  { id:"d23", difficulty:"hard", category:"logic",
+    q:"In a tournament, 16 players compete in single-elimination rounds (losing means you're out). How many games are played to find a winner?",
+    options:["8 games","14 games","15 games","16 games"], answer:2,
+    figure:"", fig:{}, words:"single elimination = har match mein 1 out",
+    explainQ:"16 khilari, har match mein ek nikal jata hai. Champion nekalne ke liye kitne matches?",
+    explainA:["15 losers hote hain","Har match 1 ko bahar karta hai","15 matches — jawab C"] },
+
+  { id:"d24", difficulty:"hard", category:"money",
+    q:"A book costs Rs. 3,200. It's on sale for 25% off. If you also have a Rs. 200 coupon, how much do you pay?",
+    options:["Rs. 2,200","Rs. 2,300","Rs. 2,400","Rs. 2,600"], answer:0,
+    figure:"", fig:{}, words:"25% off = aadha of half → /4",
+    explainQ:"3,200 ki kitab 25% off, phir 200 coupon bhi. Kitne do?",
+    explainA:["25% of 3200 = 3200 ÷ 4 = 800","3200 − 800 = 2400","2400 − 200 = 2200 — jawab A"] },
+
+  { id:"d25", difficulty:"medium", category:"time",
+    q:"What time does the clock show?",
+    options:["quarter past 7","quarter to 8","15 to 7","half past 7"], answer:0,
+    figure:"clock", fig:{h:7,m:15}, words:"quarter past = paune (7 baj kar 15)",
+    explainQ:"Ghadi par kaun sa waqt hai?",
+    explainA:["Minute hand 3 par = 15 minute","7:15 ko 'quarter past 7' kehte hain","Jawab A — quarter past 7"] },
 
 ];

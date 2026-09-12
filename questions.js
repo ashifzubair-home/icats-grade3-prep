@@ -1278,7 +1278,7 @@ window.QUESTIONS = [
   { id:"p2501", difficulty:"easy", category:"data",
     q:"The table shows miles driven by truck drivers. Who drove the fewest miles?",
     options:["Zain","Sarfraz","Ali","Hunaid"], answer:2,
-    figure:"", fig:{}, words:"fewest = sab se kam",
+    figure:"table", fig:{head:["Driver","Miles Driven"], rows:[["Ali","6,542"],["Sarfraz","6,594"],["Zain","6,548"],["Hunaid","6,954"]]}, words:"fewest = sab se kam",
     explainQ:"Ali 6,542 / Sarfraz 6,594 / Zain 6,548 / Hunaid 6,954. Sab se kam?",
     explainA:["6,542 sab se chota number","Ali — jawab C"] },
 

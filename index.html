@@ -112,7 +112,11 @@
   .qexpl:disabled{opacity:.4; cursor:not-allowed;}
   .qwords{font-size:13px; color:#0369a1; background:#e0f2fe; border:1px solid #bae6fd;
     display:inline-block; padding:4px 10px; border-radius:8px; margin:4px 0 8px; font-weight:600;}
-  .fig{margin:8px 0 6px; text-align:center;}
+  .fig{display:block; margin:10px auto 8px; text-align:center; overflow-x:auto;}
+  .fig svg{display:block; margin:0 auto; max-width:100%; height:auto;}
+  .figtable{border-collapse:collapse; margin:0 auto; font-size:15px;}
+  .figtable th,.figtable td{border:1px solid #94a3b8; padding:7px 18px; text-align:center; background:#fff;}
+  .figtable th{background:#e2e8f0; font-weight:700;}
 
   .opts{margin-top:8px;}
   .opt{display:flex; align-items:flex-start; gap:12px; width:100%; text-align:left;
@@ -140,6 +144,22 @@
     font-size:14px; font-weight:600; background:#fff;}
   .expl-btn:hover{background:#f3f4f6;}
   .expl-btn:disabled{opacity:.4; cursor:not-allowed;}
+
+  /* Split layout: question left, auto explanation right (AI Auto) */
+  .qsplit{display:flex; gap:16px; align-items:flex-start; margin-top:4px;}
+  .qleft{flex:1 1 58%; min-width:0;}
+  .qright{flex:1 1 42%; min-width:0; position:sticky; top:10px; align-self:flex-start;
+    background:#f0fdf4; border:1px solid #bbf7d0; border-radius:12px; padding:14px;
+    font-size:15px; max-height:min(58vh,480px); overflow-y:auto;}
+  .qright h3{font-size:15px; color:var(--green); margin:0 0 6px;}
+  .qright h3:not(:first-child){margin-top:14px;}
+  .qright .eq{line-height:1.6;}
+  .qright .lstep{background:#fff; border:1px solid #bbf7d0; border-radius:8px;
+    padding:8px 10px; margin-top:6px; font-size:14px;}
+  .qright .later{background:#fff; border:1px dashed var(--amber); border-radius:8px;
+    padding:8px 10px; font-size:13px; color:var(--amber);}
+  .qright .ans{background:#fff; border:1px solid #bbf7d0; border-radius:8px;
+    padding:8px 10px; font-size:14px; margin-top:4px;}
 
   /* Dots */
   .dots{display:flex; flex-wrap:wrap; gap:6px; margin-top:12px;}
@@ -241,6 +261,8 @@
     .ctr{min-width:58px; padding:10px 6px; font-size:14px;}
     .ai-btn{font-size:12px;}
     .opt{font-size:16px; padding:12px;}
+    .qsplit{flex-direction:column;}
+    .qright{position:static; max-height:none;}
   }
 </style>
 </head>
@@ -266,7 +288,7 @@ function persist(){ saveLS(store); }
 /* ============ Settings ============ */
 var DEF = {
   pc: 5, pw: -1, ps: 0, mins: 75, noLimit: false,
-  explAfter: true, aiOn: true, key: "", model: "gemini-3-flash-preview"
+  explAfter: true, autoExpl: false, aiOn: true, key: "", model: "gemini-3-flash-preview"
 };
 var MODELS = [
   {id:"gemini-3-flash-preview", label:"Gemini 3 Flash (naya, tez)"},
@@ -374,6 +396,7 @@ function figureHtml(q){
   if(q.figure === "triangles5") return figTri5();
   if(q.figure === "gridcut") return figGridcut(f);
   if(q.figure === "bucket") return figBucket(f);
+  if(q.figure === "table") return figTable(f);
   return "";
 }
 
@@ -573,6 +596,19 @@ function figBucket(f){
   return out + '</svg></span>';
 }
 
+function figTable(f){
+  var head = f.head||[], rows = f.rows||[];
+  var out = '<span class="fig"><table class="figtable"><thead><tr>';
+  head.forEach(function(h){ out += '<th>'+esc(h)+'</th>'; });
+  out += '</tr></thead><tbody>';
+  rows.forEach(function(r){
+    out += '<tr>';
+    r.forEach(function(c){ out += '<td>'+esc(c)+'</td>'; });
+    out += '</tr>';
+  });
+  return out + '</tbody></table></span>';
+}
+
 function renderHome(){
   var s = setS();
   var dists = Object.keys(DISTS).map(function(k){
@@ -602,6 +638,8 @@ function renderHome(){
     + '<span class="sw-track"></span><span>No time limit (unlimited time)</span></label>'
     + '<label class="switch"><input type="checkbox" id="set_explafter"'+(s.explAfter?" checked":"")+'>'
     + '<span class="sw-track"></span><span>Show (?) explanations only after answering</span></label>'
+    + '<label class="switch"><input type="checkbox" id="set_autoexpl"'+(s.autoExpl?" checked":"")+'>'
+    + '<span class="sw-track"></span><span>AI Auto — explanation har sawal ke saath right side par</span></label>'
     + '</div>'
     + '</div>'
     + '<div class="grid2" style="margin-top:10px">'
@@ -659,6 +697,7 @@ function collectSettings(){
   if($("set_mins")) s.mins = num("set_mins", 75);
   if($("set_nolimit")) s.noLimit = !!$("set_nolimit").checked;
   if($("set_explafter")) s.explAfter = !!$("set_explafter").checked;
+  if($("set_autoexpl")) s.autoExpl = !!$("set_autoexpl").checked;
   if($("set_key")) s.key = ($("set_key").value||"").trim();
   if($("set_model")){ var mv=($("set_model").value||"").trim(); if(mv) s.model=mv; }
   if($("set_aion")) s.aiOn = !!$("set_aion").checked;
@@ -718,6 +757,23 @@ function answerChip(a){
     : (a.status==="skipped" ? "0 skipped" : "unanswered");
 }
 
+function autoExplPanel(A){
+  var s = setS(), q = A.q;
+  var lock = s.explAfter && A.status === "unanswered";
+  var steps = lock
+    ? '<div class="later">Jawab dene ke baad hi steps khulein ge — pehle khud try karo.</div>'
+    : (q.explainA||[]).map(function(st){ return '<div class="lstep">'+esc(st)+'</div>'; }).join("");
+  var body = '<h3>&#128161; Sawal samjhao</h3><div class="eq">'+esc(q.explainQ)+'</div>';
+  if(!lock){
+    body += '<h3>Jawab ke steps</h3>'
+      + '<div class="ans">Sahi jawab: <b>'+esc(q.options[q.answer])+'</b> ('+("ABCD"[q.answer])+')</div>'
+      + steps;
+  } else {
+    body += '<h3>Jawab ke steps</h3>' + steps;
+  }
+  return '<div class="qright">'+body+'</div>';
+}
+
 function renderQuiz(){
   var s = setS();
   var C = attempt.qs.length;
@@ -751,6 +807,13 @@ function renderQuiz(){
   var explDisabled = s.explAfter && !locked;
   var aiOk = s.aiOn && s.key;
 
+  var mid = '<div class="qtext">'+esc(A.q.q)+'</div>'
+    + figureHtml(A.q)
+    + (A.q.words?'<span class="qwords">Hint: '+esc(A.q.words)+'</span>':"")
+    + '<div class="opts">'+opts+'</div>'
+    + fb;
+  if(s.autoExpl) mid = '<div class="qsplit"><div class="qleft">'+mid+'</div>'+autoExplPanel(A)+'</div>';
+
   app.innerHTML =
     '<div class="topbar">'
     + '<span class="chip">'+esc(attempt.title)+'</span>'
@@ -762,11 +825,7 @@ function renderQuiz(){
     + '<div class="qcard">'
     + '<div class="qno">QUESTION '+(attempt.idx+1)+' — '+A.q.difficulty.toUpperCase()+' · '+esc(A.q.category)
     + '<button class="qexpl" onclick="showExplain(\'q\')"'+(explDisabled?" disabled":"")+'>(?) Sawal samjhao</button></div>'
-    + '<div class="qtext">'+esc(A.q.q)+'</div>'
-    + figureHtml(A.q)
-    + (A.q.words?'<span class="qwords">Hint: '+esc(A.q.words)+'</span>':"")
-    + '<div class="opts">'+opts+'</div>'
-    + fb
+    + mid
     + '<div class="expl">'
     + '<button class="expl-btn" id="eaB" onclick="showExplain(\'a\')"'+(explDisabled?" disabled":"")+'>(?) Jawab samjhao — steps</button>'
     + '</div>'
@@ -1039,6 +1098,7 @@ function renderResults(){
     var stlab = st==="c"?"Correct":"Wrong";
     if(st==="s") stlab="Skip";
     var det = '<div class="row"><b>Q'+(i+1)+':</b> '+esc(a.q.q)+'</div>'
+      + figureHtml(a.q)
       + (a.q.words?'<div class="qwords">Hint: '+esc(a.q.words)+'</div>':"")
       + '<div class="row" style="margin-top:6px">Aap ka jawab: '
         + (a.choice!=null?esc(a.q.options[a.choice]):"— (skipped)")+'</div>'

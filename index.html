@@ -154,6 +154,8 @@
   .qright h3{font-size:15px; color:var(--green); margin:0 0 6px;}
   .qright h3:not(:first-child){margin-top:14px;}
   .qright .eq{line-height:1.6;}
+  .qright .eq.ai{white-space:pre-wrap; background:#fff; border:1px solid #ddd6fe;
+    border-radius:8px; padding:10px;}
   .qright .lstep{background:#fff; border:1px solid #bbf7d0; border-radius:8px;
     padding:8px 10px; margin-top:6px; font-size:14px;}
   .qright .later{background:#fff; border:1px dashed var(--amber); border-radius:8px;
@@ -349,6 +351,7 @@ function buildGenerated(count, distKey){
 
 /* ============ Attempt state ============ */
 var attempt = null; // {title, mode, qs:[{q,status,choice,correct,gained}], idx, startedAt, endsAt, ending}
+var autoAiCache = {}, autoAiPending = {}; // AI Auto (per-question explanation cache)
 function newAttempt(title, mode, questions, timedMins){
   attempt = {
     title: title, mode: mode, idx: 0, ending: false,
@@ -357,6 +360,7 @@ function newAttempt(title, mode, questions, timedMins){
     }; }),
     startedAt: Date.now(), timedMins: timedMins
   };
+  autoAiCache = {}; autoAiPending = {};
   startTimerState(timedMins);
 }
 function startTimerState(mins){
@@ -639,7 +643,7 @@ function renderHome(){
     + '<label class="switch"><input type="checkbox" id="set_explafter"'+(s.explAfter?" checked":"")+'>'
     + '<span class="sw-track"></span><span>Show (?) explanations only after answering</span></label>'
     + '<label class="switch"><input type="checkbox" id="set_autoexpl"'+(s.autoExpl?" checked":"")+'>'
-    + '<span class="sw-track"></span><span>AI Auto — explanation har sawal ke saath right side par</span></label>'
+    + '<span class="sw-track"></span><span>AI Auto — AI har sawal ka matlab samjhaata hai (jawab nahi)</span></label>'
     + '</div>'
     + '</div>'
     + '<div class="grid2" style="margin-top:10px">'
@@ -758,20 +762,41 @@ function answerChip(a){
 }
 
 function autoExplPanel(A){
-  var s = setS(), q = A.q;
-  var lock = s.explAfter && A.status === "unanswered";
-  var steps = lock
-    ? '<div class="later">Jawab dene ke baad hi steps khulein ge — pehle khud try karo.</div>'
-    : (q.explainA||[]).map(function(st){ return '<div class="lstep">'+esc(st)+'</div>'; }).join("");
-  var body = '<h3>&#128161; Sawal samjhao</h3><div class="eq">'+esc(q.explainQ)+'</div>';
-  if(!lock){
-    body += '<h3>Jawab ke steps</h3>'
-      + '<div class="ans">Sahi jawab: <b>'+esc(q.options[q.answer])+'</b> ('+("ABCD"[q.answer])+')</div>'
-      + steps;
+  var q = A.q;
+  var body = '<h3>AI Auto · Sawal samjhao</h3>';
+  var c = autoAiCache[q.id] || {};
+  if(c.txt){
+    body += '<div class="eq ai">'+c.txt+'</div>';
+  } else if(c.err){
+    body += '<div class="later">AI se jawab nahi mila — '+esc(c.err)+'</div>';
+    if(q.explainQ) body += '<div class="eq">'+esc(q.explainQ)+'</div>';
+  } else if(autoAiPending[q.id]){
+    body += '<div class="later">AI soch raha hai… (thora wait karein)</div>';
+    if(q.explainQ) body += '<div class="eq" style="opacity:.75">'+esc(q.explainQ)+'</div>';
   } else {
-    body += '<h3>Jawab ke steps</h3>' + steps;
+    body += '<div class="eq">'+esc(q.explainQ)+'</div>';
   }
   return '<div class="qright">'+body+'</div>';
+}
+
+function aiAutoStart(A){
+  var q = A.q;
+  if(autoAiCache[q.id] || autoAiPending[q.id]) return;
+  var s = setS();
+  if(!s.aiOn || !s.key){ autoAiCache[q.id] = {txt:null, err:null}; return; }
+  autoAiPending[q.id] = true;
+  var prompt = 'Sawal samjhao — SIRF matlab samjhao, jawab MAT do:\n\n"'+q.q
+    + '"\n\nOptions: ' + optsText(q);
+  var my = attempt;
+  askGemini([{role:"user", parts:[{text:prompt}]}]).then(function(t){
+    delete autoAiPending[q.id];
+    autoAiCache[q.id] = {txt:md(t), err:null};
+    if(attempt === my) renderQuiz();
+  }, function(e){
+    delete autoAiPending[q.id];
+    autoAiCache[q.id] = {txt:null, err:msg(e)};
+    if(attempt === my) renderQuiz();
+  });
 }
 
 function renderQuiz(){
@@ -812,7 +837,7 @@ function renderQuiz(){
     + (A.q.words?'<span class="qwords">Hint: '+esc(A.q.words)+'</span>':"")
     + '<div class="opts">'+opts+'</div>'
     + fb;
-  if(s.autoExpl) mid = '<div class="qsplit"><div class="qleft">'+mid+'</div>'+autoExplPanel(A)+'</div>';
+  if(s.autoExpl){ aiAutoStart(A); mid = '<div class="qsplit"><div class="qleft">'+mid+'</div>'+autoExplPanel(A)+'</div>'; }
 
   app.innerHTML =
     '<div class="topbar">'
